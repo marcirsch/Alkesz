@@ -7,6 +7,16 @@ public class Player {
     private int points = 0;
     private int alcoholLevel = 0;
 
+    private int missed = 0;
+
+    public int getMissed() {
+        return missed;
+    }
+
+    public void setMissed(int missed) {
+        this.missed = missed;
+    }
+
     public int getAlcoholLevel() {
         return alcoholLevel;
     }

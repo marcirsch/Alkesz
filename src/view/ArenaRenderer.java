@@ -28,7 +28,7 @@ public class ArenaRenderer extends JPanel {
         setFocusTraversalKeysEnabled(false);
     }
 
-    public void Render(Graphics2D g) {
+    private void Render(Graphics2D g) {
 
         //draw player
         g.setColor(Color.GREEN);
@@ -39,14 +39,39 @@ public class ArenaRenderer extends JPanel {
         g.setColor(Color.YELLOW);
         try {
             for (FallObject fallObject : arena.getFallObjectList()) {
-                g.fillOval(fallObject.getX(), fallObject.getY(), FALLOBJECT_WIDTH, FALLOBJECT_HEIGHT);
+                RenderFallObject(fallObject, g);
 
             }
         } catch (Exception e) {
-            System.out.println("empty list");
+//            System.out.println("empty list AR");
         }
 
 
+    }
+
+    private void RenderFallObject(FallObject fallObject, Graphics2D g) {
+        switch (fallObject.getType()) {
+            case 0:
+                g.setColor(Color.GREEN);
+                break;//TODO replace with aspirin
+            case 1:
+                g.setColor(Color.RED);
+                break;//TODO replace with a picture of some kind of alcohol
+            case 2:
+                g.setColor(Color.DARK_GRAY);
+                break;//TODO replace with a picture of some kind of alcohol
+            case 3:
+                g.setColor(Color.CYAN);
+                break;//TODO replace with a picture of some kind of alcohol
+            case 4:
+                g.setColor(Color.BLUE);
+                break;//TODO replace with a picture of some kind of alcohol
+            default:
+                g.setColor(Color.RED);
+                break;
+        }
+
+        g.fillOval(fallObject.getX(), fallObject.getY(), FALLOBJECT_WIDTH, FALLOBJECT_HEIGHT);
     }
 
     public void paint(Graphics g) {

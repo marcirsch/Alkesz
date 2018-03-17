@@ -15,8 +15,6 @@ public class Alkesz {
             public void run() {
                 View view = new View();
 
-
-
             }
         });
     }
