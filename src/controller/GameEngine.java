@@ -21,7 +21,7 @@ public class GameEngine implements MouseMotionListener {
     private ArenaRenderer arenaRenderer;
 
     private Timer timer;
-    private int delay = 8;
+    private int delay = 10;
 
     private Random random = new Random(System.currentTimeMillis());
 
@@ -47,13 +47,13 @@ public class GameEngine implements MouseMotionListener {
     }
 
 
-    public void Update() {
-        if(random.nextInt(1000) % 50 == 1) {
+    private void Update() {
+        if (random.nextInt(1000) % 100 == 1) {
 
             FallObject fallObject = new FallObject();
             fallObject.setY(0);
             fallObject.setX(random.nextInt(Arena.WIDTH));
-            fallObject.setVelocity(5);
+            fallObject.setVelocity(1);
 
             arena.getFallObjectList().add(fallObject);
         }
@@ -82,7 +82,7 @@ public class GameEngine implements MouseMotionListener {
 
                 ++i;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Empty list");
         }
 
