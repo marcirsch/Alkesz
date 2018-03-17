@@ -35,19 +35,13 @@ public class GameEngine implements MouseMotionListener {
         arenaRenderer = new ArenaRenderer(arena);
         arenaRenderer.addMouseMotionListener(this);
 
-        timer = new Timer(delay, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                timer.start();
-                Update();
-                arenaRenderer.repaint();
-            }
-        });
+        timer = new Timer(delay, e -> Update());
         timer.start();
     }
 
 
     private void Update() {
+        timer.start();
         if (random.nextInt(1000) % 100 == 1) {
 
             FallObject fallObject = new FallObject();
@@ -87,6 +81,7 @@ public class GameEngine implements MouseMotionListener {
         }
 
 
+        arenaRenderer.repaint();
     }
 
 
