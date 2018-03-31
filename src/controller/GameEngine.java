@@ -1,11 +1,11 @@
 package controller;
 
-import model.Arena;
-import model.FallObject;
-import model.Player;
+import model.*;
 import view.ArenaRenderer;
 import view.Observer;
 import view.Subject;
+import model.TopList;
+import view.View;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,16 +22,19 @@ public class GameEngine implements MouseMotionListener, Subject {
     private Arena arena;
     private Player player;
 
+    public TopList topList;
+
     private ArenaRenderer arenaRenderer;
 
     private Timer timer; // timer is used for screen update
     private int delay = 10;
 
     private Random random = new Random(System.currentTimeMillis());
-    private boolean play = true;
+    private boolean play = false;
 
     private ArrayList observers = new ArrayList();// used to communicate with view
 
+    public Settings settings;
 
     public GameEngine() {
         player = new Player();
@@ -39,22 +42,22 @@ public class GameEngine implements MouseMotionListener, Subject {
         player.setY(Arena.HEIGHT - 30);
 
         arena = new Arena(player);
-        arenaRenderer = new ArenaRenderer(arena);
-        arenaRenderer.addMouseMotionListener(this);
+        settings = new Settings();
+        topList = new TopList();
 
         timer = new Timer(delay, e -> Update()); // call update every delay milliseconds
-        timer.start();
     }
 
 
     private void Update() {
         timer.start();
-
-
         if (play) {
             UpdateFallObjects();
         }
 
+        arenaRenderer.setScore(player.getPoints());
+        arenaRenderer.setMissed(player.getMissed());
+        arenaRenderer.setAlcoholLevel(player.getAlcoholLevel());
         arenaRenderer.repaint();
     }
 
@@ -92,6 +95,10 @@ public class GameEngine implements MouseMotionListener, Subject {
 
                     if (player.getMissed() > 5) {
                         play = false;
+
+//                        TODO Leellenőrizni, hogy benne van e a legjobb 5ben, és ha igen akkor egy inputmezőt felhozni, hogy beírja a nevét
+                        topList.add(player.getPoints(),"G.I.JOE");
+                        ((View)observers.get(0)).refreshToplist();
                         notifyObservers();
                         break;
                     }
@@ -127,6 +134,9 @@ public class GameEngine implements MouseMotionListener, Subject {
 
     public void setPlay(boolean play) {
         this.play = play;
+        if (play==true){
+            timer.start();
+        }
     }
 
 
@@ -143,6 +153,15 @@ public class GameEngine implements MouseMotionListener, Subject {
 
     public ArenaRenderer getArenaRenderer() {
         return arenaRenderer;
+    }
+
+    public void setArenaRenderer(ArenaRenderer arenaRenderer) {
+        this.arenaRenderer = arenaRenderer;
+        this.arenaRenderer.addMouseMotionListener(this);
+    }
+
+    public Arena getArena() {
+        return arena;
     }
 
     @Override

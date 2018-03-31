@@ -17,7 +17,9 @@ public class ArenaRenderer extends JPanel {
     public static final int FALLOBJECT_WIDTH = 10;
     public static final int FALLOBJECT_HEIGHT = 10;
 
-
+    private JLabel scoreLabel;
+    private JLabel alcoholLevelLabel;
+    private JLabel missedLabel;
     private Arena arena;
 
 
@@ -80,6 +82,32 @@ public class ArenaRenderer extends JPanel {
         this.Render(graphics2D);
 
         g.drawImage(bufferedImage, 0, 0, null);
+    }
+
+
+
+    public void setAlcoholLevelLabel(JLabel alcoholLevelLabel) {
+        this.alcoholLevelLabel = alcoholLevelLabel;
+    }
+
+    public void setMissedLabel(JLabel missedLabel) {
+        this.missedLabel = missedLabel;
+    }
+
+    public void setScoreLabel(JLabel scoreLabel) {
+        this.scoreLabel = scoreLabel;
+    }
+
+    public void setScore(int score){
+        this.scoreLabel.setText(String.valueOf(score));
+    }
+
+    public void setAlcoholLevel(int level){
+        this.alcoholLevelLabel.setText(String.valueOf(level));
+    }
+
+    public void setMissed(int missed){
+        this.missedLabel.setText(String.valueOf(missed));
     }
 
 }

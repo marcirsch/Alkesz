@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Arena {
-    public static final int HEIGHT = 600;
+    public static final int HEIGHT = 600/25*18;
     public static final int WIDTH = 700;
 
     private Player player;
