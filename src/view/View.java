@@ -539,11 +539,14 @@ public class View implements Observer {
             public void mouseEntered(MouseEvent e) {
                 original = e.getComponent().getFont();
                 e.getComponent().setFont(original.deriveFont(original.getStyle() | Font.BOLD));
+                e.getComponent().setCursor(new Cursor(Cursor.HAND_CURSOR));
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
                 e.getComponent().setFont(original);
+                e.getComponent().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+
             }
         };
         return listener;
@@ -578,11 +581,13 @@ public class View implements Observer {
             public void mouseEntered(MouseEvent e) {
                 original = e.getComponent().getFont();
                 e.getComponent().setFont(original.deriveFont(original.getStyle() | Font.BOLD));
+                e.getComponent().setCursor(new Cursor(Cursor.HAND_CURSOR));
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
                 e.getComponent().setFont(original);
+                e.getComponent().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             }
         };
         return listener;
@@ -617,11 +622,13 @@ public class View implements Observer {
             public void mouseEntered(MouseEvent e) {
                 original = e.getComponent().getFont();
                 e.getComponent().setFont(original.deriveFont(original.getStyle() | Font.BOLD));
+                e.getComponent().setCursor(new Cursor(Cursor.HAND_CURSOR));
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
                 e.getComponent().setFont(original);
+                e.getComponent().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             }
         };
         return listener;
