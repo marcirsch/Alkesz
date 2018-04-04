@@ -343,7 +343,7 @@ public class View implements Observer {
         ip.setFont(new Font("Comic Sans", Font.ITALIC, 16));
         ip.setVisible(true);
         addressPanel.add(ip,gbc);
-        addressPanel.setBackground(Color.BLUE);
+        addressPanel.setBackground(Color.LIGHT_GRAY);
 
         JFormattedTextField ipInputField= new JFormattedTextField();
         try {
