@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -14,13 +15,13 @@ import org.json.simple.parser.ParseException;
 public class TopList {
 
     private ArrayList<TopListEntry> entries;
-    private int minScore=0;
-    private int itemsInList=0;
-    private int maxNumberOfItems=5;
+    private int minScore = 0;
+    private int itemsInList = 0;
+    private int maxNumberOfItems = 5;
 
-    public static final String defaultPathToJSON = "./toplist.json";
+    private static final String defaultPathToJSON = "./toplist.json";
 
-    public TopList(){
+    public TopList() {
         entries = new ArrayList<TopListEntry>();
 
         try {
@@ -34,29 +35,29 @@ public class TopList {
         }
     }
 
-    public void add(int score,String name){
-        entries.add(new TopListEntry(score,name));
+    public void add(int score, String name) {
+        entries.add(new TopListEntry(score, name));
         Collections.sort(entries);
-        if (entries.size() > maxNumberOfItems){
-            entries.remove(entries.size()-1);
+        if (entries.size() > maxNumberOfItems) {
+            entries.remove(entries.size() - 1);
         }
         itemsInList = entries.size();
-        minScore =  entries.get(itemsInList-1).getScore();
+        minScore = entries.get(itemsInList - 1).getScore();
         exportToplistToJSON(defaultPathToJSON);
     }
 
-    public void importToplistFromJSON(String path) throws IOException,ParseException {
+    public void importToplistFromJSON(String path) throws IOException, ParseException {
         JSONParser parser = new JSONParser();
         Object obj = parser.parse(new FileReader(path));
-        JSONObject jsonObject =  (JSONObject) obj;
-        JSONArray toplist = (JSONArray)jsonObject.get("toplist");
-        for (Object o:toplist){
+        JSONObject jsonObject = (JSONObject) obj;
+        JSONArray toplist = (JSONArray) jsonObject.get("toplist");
+        for (Object o : toplist) {
             JSONObject listItem = (JSONObject) o;
-            this.add(((Long) listItem.get("score")).intValue(),(String) listItem.get("name"));
+            this.add(((Long) listItem.get("score")).intValue(), (String) listItem.get("name"));
         }
     }
 
-    public void exportToplistToJSON(String path){
+    public void exportToplistToJSON(String path) {
         JSONObject obj = new JSONObject();
         JSONArray jsonlist = new JSONArray();
         for (TopListEntry e : this.entries) {
@@ -78,13 +79,14 @@ public class TopList {
         return minScore;
     }
 
-    public int getItemsInList(){
+    public int getItemsInList() {
         return itemsInList;
     }
 
-    public TopListEntry getEntry(int index){
+    public TopListEntry getEntry(int index) {
         return entries.get(index);
     }
+
     public ArrayList<TopListEntry> getEntries() {
         return entries;
     }

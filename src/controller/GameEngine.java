@@ -9,11 +9,11 @@ import view.View;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -21,20 +21,20 @@ public class GameEngine implements MouseMotionListener, Subject {
 
     private Arena arena;
     private Player player;
-
-    public TopList topList;
-
     private ArenaRenderer arenaRenderer;
-
-    private Timer timer; // timer is used for screen update
-    private int delay = 10;
-
-    private Random random = new Random(System.currentTimeMillis());
-    private boolean play = false;
-
-    private ArrayList observers = new ArrayList();// used to communicate with view
+    private TipsyOffsetGenerator tipsyOffsetGenerator;
 
     public Settings settings;
+    public TopList topList;
+
+
+    private boolean play = false;
+
+    private Timer timer; // timer is used for screen update
+
+    private Random random = new Random(System.currentTimeMillis());
+    private ArrayList observers = new ArrayList();// used to communicate with view
+    private int PlayerXPosition;
 
     public GameEngine() {
         player = new Player();
@@ -45,67 +45,62 @@ public class GameEngine implements MouseMotionListener, Subject {
         settings = new Settings();
         topList = new TopList();
 
-        timer = new Timer(delay, e -> Update()); // call update every delay milliseconds
+        tipsyOffsetGenerator = new TipsyOffsetGenerator();
+
+        timer = new Timer(getDifficultyDelay(), e -> Update()); // call update every delay milliseconds
     }
 
 
     private void Update() {
+        timer.setDelay(getDifficultyDelay());
         timer.start();
+
+        tipsyOffsetGenerator.setAlcoholLevel(player.getAlcoholLevel());
+
+
         if (play) {
             UpdateFallObjects();
         }
 
-        arenaRenderer.setScore(player.getPoints());
-        arenaRenderer.setMissed(player.getMissed());
-        arenaRenderer.setAlcoholLevel(player.getAlcoholLevel());
+        if (isLost()) {
+            play = false;
+
+            //TODO Leellenőrizni, hogy benne van e a legjobb 5ben, és ha igen akkor egy inputmezőt felhozni, hogy beírja a nevét
+            topList.add(player.getPoints(), "G.I.JOE");
+            ((View) observers.get(0)).refreshToplist();
+            notifyObservers();
+        }
+
+
+        player.setX(PlayerXPosition);
+        player.setX(PlayerXPosition + tipsyOffsetGenerator.getValue());
         arenaRenderer.repaint();
     }
 
 
     private void UpdateFallObjects() {
         //create fallObjects randomly
-        if (random.nextInt(1000) % 100 == 1) {
-
-            FallObject fallObject = new FallObject();
-            fallObject.setY(0);
-            fallObject.setX(random.nextInt(Arena.WIDTH));
-            fallObject.setVelocity(1);
-            fallObject.setType(random.nextInt(5));
-
-            arena.getFallObjectList().add(fallObject);
-        }
-
+        addNewFallObject();
 
         try {
             for (FallObject fallObject : arena.getFallObjectList()) {
                 fallObject.setY(fallObject.getY() + fallObject.getVelocity());
-//            System.out.println("current y: " + fallObject.getY() + " velocity: " + fallObject.getVelocity());
-                boolean caught = false;
 
-                if (new Rectangle(fallObject.getX(), fallObject.getY(), ArenaRenderer.FALLOBJECT_WIDTH, ArenaRenderer.FALLOBJECT_HEIGHT).intersects(new Rectangle(player.getX(), player.getY(), ArenaRenderer.PLAYER_WIDTH, ArenaRenderer.PLAYER_HEIGHT))) {
+                boolean deleteObject = false;
+
+                if (isCollision(fallObject)) {
                     player.setPoints(player.getPoints() + 1);
-                    caught = true;
+                    player.setAlcoholLevel(player.getAlcoholLevel() + 1);
+                    deleteObject = true;
                     System.out.println("Player got point! points: " + player.getPoints());
-                }
-
-
-                if (fallObject.getY() > Arena.HEIGHT && !caught) {
+                } else if (fallObject.getY() > Arena.HEIGHT) {
                     player.setMissed(player.getMissed() + 1);
-                    caught = true; // set caught to remove from list
-
-                    if (player.getMissed() > 5) {
-                        play = false;
-
-//                        TODO Leellenőrizni, hogy benne van e a legjobb 5ben, és ha igen akkor egy inputmezőt felhozni, hogy beírja a nevét
-                        topList.add(player.getPoints(),"G.I.JOE");
-                        ((View)observers.get(0)).refreshToplist();
-                        notifyObservers();
-                        break;
-                    }
+                    player.setAlcoholLevel(0);
+                    deleteObject = true; // set caught to remove from list
                 }
 
 
-                if (caught) {
+                if (deleteObject) {
                     arena.getFallObjectList().remove(fallObject);
                     System.out.println("Fallobject got removed");
                 }
@@ -116,7 +111,89 @@ public class GameEngine implements MouseMotionListener, Subject {
         }
     }
 
-    public void ResetGame(){
+
+    private int getDifficultyDiv() {
+        int divisor = 1;
+        switch (settings.getDifficulty()) {
+            case EASY:
+                divisor = 50;
+                break;
+            case MEDIUM:
+                divisor = 10;
+                break;
+            case HARD:
+                divisor = 2;
+                break;
+            default:
+                break;
+        }
+        return divisor;
+    }
+
+    private int getDifficultyTh() {
+        int threshold = 1;
+        switch (settings.getDifficulty()) {
+            case EASY:
+                threshold = 150;
+                break;
+            case MEDIUM:
+                threshold = 100;
+                break;
+            case HARD:
+                threshold = 75;
+                break;
+            default:
+                break;
+        }
+        return threshold;
+    }
+
+    private int getDifficultyDelay() {
+        int delay = 1;
+        switch (settings.getDifficulty()) {
+            case EASY:
+                delay = 10;
+                break;
+            case MEDIUM:
+                delay = 8;
+                break;
+            case HARD:
+                delay = 6;
+                break;
+            default:
+                break;
+        }
+        return delay;
+    }
+
+
+    private boolean isLost() {
+        return (player.getMissed() > Settings.MISSED_LOSE_THRESHOLD);
+    }
+
+    private void addNewFallObject() {
+//        System.out.println("miny: " + arena.getMinY());
+        if (random.nextInt(1000) % getDifficultyDiv() == 1 && arena.getMinY() > getDifficultyTh()) {
+            List<FallObject> fallObjectList = arena.getFallObjectList();
+
+            FallObject fallObject = new FallObject();
+            fallObject.setY(0);
+            fallObject.setX(random.nextInt(Arena.WIDTH));
+            fallObject.setVelocity(1);
+            fallObject.setType(random.nextInt(5));
+
+            fallObjectList.add(fallObject);
+        }
+    }
+
+    private boolean isCollision(FallObject fallObject) {
+        Rectangle fallObjRect = new Rectangle(fallObject.getX(), fallObject.getY(), ArenaRenderer.FALLOBJECT_WIDTH, ArenaRenderer.FALLOBJECT_HEIGHT);
+        Rectangle playerRect = new Rectangle(player.getX(), player.getY(), ArenaRenderer.PLAYER_WIDTH, ArenaRenderer.PLAYER_HEIGHT);
+        return fallObjRect.intersects(playerRect);
+    }
+
+
+    public void ResetGame() {
         player.setMissed(0);
         player.setPoints(0);
         player.setAlcoholLevel(0);
@@ -134,7 +211,7 @@ public class GameEngine implements MouseMotionListener, Subject {
 
     public void setPlay(boolean play) {
         this.play = play;
-        if (play==true){
+        if (play) {
             timer.start();
         }
     }
@@ -147,7 +224,8 @@ public class GameEngine implements MouseMotionListener, Subject {
 
     @Override
     public void mouseMoved(MouseEvent mouseEvent) {
-        player.setX(mouseEvent.getX());
+//        player.setX(mouseEvent.getX());
+        PlayerXPosition = mouseEvent.getX();
     }
 
 
@@ -168,7 +246,7 @@ public class GameEngine implements MouseMotionListener, Subject {
     public void addObserver(Observer o) {
         try {
             observers.add(o);
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Failed to add to Observer list");
         }
     }

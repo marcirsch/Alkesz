@@ -4,16 +4,19 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 
-
 public class Settings {
     private GAME_DIFFICULTY difficulty = GAME_DIFFICULTY.EASY;
     private SERVER_CLIENT_ROLE role;
-    public String localIPAddress;
-    public String remoteIPAddress;
-    public enum GAME_DIFFICULTY{EASY,MEDIUM,HARD}
-    public enum SERVER_CLIENT_ROLE{SERVER,CLIENT}
+    private String localIPAddress;
+    private String remoteIPAddress;
 
-    public Settings(){
+    public enum GAME_DIFFICULTY {EASY, MEDIUM, HARD}
+
+    public enum SERVER_CLIENT_ROLE {SERVER, CLIENT}
+
+    public static final int MISSED_LOSE_THRESHOLD = 5;
+
+    public Settings() {
         difficulty = GAME_DIFFICULTY.EASY;
         role = SERVER_CLIENT_ROLE.SERVER;
         InetAddress ip;
@@ -29,7 +32,8 @@ public class Settings {
 
         }
     }
-    public String getLocalIPAddress(){
+
+    public String getLocalIPAddress() {
         return localIPAddress;
     }
 
@@ -37,21 +41,23 @@ public class Settings {
         return remoteIPAddress;
     }
 
-    public GAME_DIFFICULTY getDifficulty(){
-        return difficulty;
-    }
 
     public SERVER_CLIENT_ROLE getRole() {
         return role;
     }
 
-    public void setLocalIPAddress(String ip){
+    public void setLocalIPAddress(String ip) {
         this.localIPAddress = ip;
     }
 
     public void setDifficulty(GAME_DIFFICULTY difficulty) {
         this.difficulty = difficulty;
     }
+
+    public GAME_DIFFICULTY getDifficulty() {
+        return difficulty;
+    }
+
 
     public void setRemoteIPAddress(String remoteIPAddress) {
         this.remoteIPAddress = remoteIPAddress;

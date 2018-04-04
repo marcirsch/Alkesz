@@ -6,8 +6,6 @@ import model.Player;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 
 public class ArenaRenderer extends JPanel {
@@ -30,7 +28,7 @@ public class ArenaRenderer extends JPanel {
         setFocusTraversalKeysEnabled(false);
     }
 
-    private void Render(Graphics2D g) {
+    private void RenderArena(Graphics2D g) {
 
         //draw player
         g.setColor(Color.GREEN);
@@ -40,13 +38,17 @@ public class ArenaRenderer extends JPanel {
         //draw falling object
         g.setColor(Color.YELLOW);
         try {
-            for (FallObject fallObject : arena.getFallObjectList()) {
-                RenderFallObject(fallObject, g);
+            if (!arena.getFallObjectList().isEmpty()) {
+                for (FallObject fallObject : arena.getFallObjectList()) {
+                    RenderFallObject(fallObject, g);
 
+                }
             }
         } catch (Exception e) {
 //            System.out.println("empty list AR");
         }
+
+        //draw tipsy effects
 
 
     }
@@ -79,11 +81,19 @@ public class ArenaRenderer extends JPanel {
     public void paint(Graphics g) {
         BufferedImage bufferedImage = new BufferedImage(Arena.WIDTH, Arena.HEIGHT, BufferedImage.TYPE_INT_RGB);
         Graphics2D graphics2D = (Graphics2D) bufferedImage.getGraphics();
-        this.Render(graphics2D);
+        RenderArena(graphics2D);
 
         g.drawImage(bufferedImage, 0, 0, null);
+
+        updateLabels();
     }
 
+
+    private void updateLabels() {
+        this.missedLabel.setText(String.valueOf(arena.getPlayer().getMissed()));
+        this.alcoholLevelLabel.setText(String.valueOf(arena.getPlayer().getAlcoholLevel()));
+        this.scoreLabel.setText(String.valueOf(arena.getPlayer().getPoints()));
+    }
 
 
     public void setAlcoholLevelLabel(JLabel alcoholLevelLabel) {
@@ -98,16 +108,5 @@ public class ArenaRenderer extends JPanel {
         this.scoreLabel = scoreLabel;
     }
 
-    public void setScore(int score){
-        this.scoreLabel.setText(String.valueOf(score));
-    }
-
-    public void setAlcoholLevel(int level){
-        this.alcoholLevelLabel.setText(String.valueOf(level));
-    }
-
-    public void setMissed(int missed){
-        this.missedLabel.setText(String.valueOf(missed));
-    }
 
 }
