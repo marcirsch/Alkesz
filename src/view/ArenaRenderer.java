@@ -7,6 +7,9 @@ import model.Player;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.ConvolveOp;
+import java.awt.image.Kernel;
+import java.nio.Buffer;
 
 public class ArenaRenderer extends JPanel {
 
@@ -78,10 +81,26 @@ public class ArenaRenderer extends JPanel {
         g.fillOval(fallObject.getX(), fallObject.getY(), FALLOBJECT_WIDTH, FALLOBJECT_HEIGHT);
     }
 
+    public BufferedImage blur(BufferedImage buf) {
+        BufferedImage bufDest = new BufferedImage(buf.getWidth(), buf.getHeight(), buf.getType());
+        float data[] = {0.0725f, 0.125f, 0.0725f, 0.125f, 0.25f, 0.125f,
+                0.0725f, 0.125f, 0.0725f, 0.125f, 0.0725f, 0.125f, 0.0725f, 0.125f, 0.0725f, 0.125f};
+        Kernel kernel = new Kernel(4, 4, data);
+        ConvolveOp convolve = new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP,
+                null);
+        convolve.filter(buf, bufDest);
+        return bufDest;
+    }
+
     public void paint(Graphics g) {
         BufferedImage bufferedImage = new BufferedImage(Arena.WIDTH, Arena.HEIGHT, BufferedImage.TYPE_INT_RGB);
         Graphics2D graphics2D = (Graphics2D) bufferedImage.getGraphics();
         RenderArena(graphics2D);
+
+        if (arena.getPlayer().getAlcoholLevel() > 10) {
+            bufferedImage = blur(bufferedImage);
+        }
+
 
         g.drawImage(bufferedImage, 0, 0, null);
 
