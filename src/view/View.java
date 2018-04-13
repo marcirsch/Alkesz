@@ -12,6 +12,7 @@ import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
@@ -55,6 +56,8 @@ public class View implements Observer {
         currentPage=PAGENAME.MENU;
         pages = createPages();
         showPage(PAGENAME.MENU);
+
+
     }
 
 
@@ -439,6 +442,7 @@ public class View implements Observer {
         gbc.gridy++;
         gbc.weighty=23;
         ArenaRenderer arenaPanel =  new ArenaRenderer(this.controller.getArena());
+        arenaPanel.addMouseListener(hoverOverArenaListener());
         this.controller.setArenaRenderer(arenaPanel);
         page.add(arenaPanel,gbc);
 
@@ -648,6 +652,26 @@ public class View implements Observer {
             public void mouseClicked(MouseEvent e) {
                 controller.setPlay(false);
                 controller.ResetGame();
+            }
+        };
+        return listener;
+    }
+    private MouseListener hoverOverArenaListener(){
+        MouseListener listener = new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                // Transparent 16 x 16 pixel cursor image.
+                BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+
+                // Create a new blank cursor.
+                Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
+                                        cursorImg, new Point(0, 0), "blank cursor");
+                e.getComponent().setCursor(blankCursor);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                e.getComponent().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             }
         };
         return listener;

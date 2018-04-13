@@ -4,11 +4,16 @@ import model.Arena;
 import model.FallObject;
 import model.Player;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.Buffer;
 
 public class ArenaRenderer extends JPanel {
@@ -22,18 +27,54 @@ public class ArenaRenderer extends JPanel {
     private JLabel alcoholLevelLabel;
     private JLabel missedLabel;
     private Arena arena;
+    private int blinkT=1000;
+    private int blinkCounter=1;
+    private int blinkDelay=2000;
+    private int blinkSpeed=50;
+    private int blinkDir=1;
+    private int blinkDelayCounter=0;
+    private boolean blinkEnabled=true;
 
+    private Image imageAspirin;
+    private Image imageJager;
+    private Image imageUnicum;
+    private Image imageTatratea;
 
     public ArenaRenderer(Arena arena) {
         this.arena = arena;
 
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
+        BufferedImage img;
+        try {
+            img = ImageIO.read(getClass().getResource("/resources/images/Aspirin.png"));
+            imageAspirin = img.getScaledInstance(30, 30, Image.SCALE_DEFAULT);
+            img = ImageIO.read(getClass().getResource("/resources/images/Jager.png"));
+            imageJager = img.getScaledInstance(40, 40, Image.SCALE_DEFAULT);
+            img = ImageIO.read(getClass().getResource("/resources/images/Unicum.png"));
+            imageUnicum = img.getScaledInstance(40, 40, Image.SCALE_DEFAULT);
+            img = ImageIO.read(getClass().getResource("/resources/images/Tatratea.png"));
+            imageTatratea = img.getScaledInstance(40, 40, Image.SCALE_DEFAULT);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
     }
 
     private void RenderArena(Graphics2D g) {
-
+        int height = this.getHeight();
+        int width = this.getWidth();
+        int blinkHeight;
+        if (blinkEnabled){
+            blinkDelayCounter=blinkDelayCounter+blinkSpeed*1;
+            System.out.println(blinkDelayCounter);
+            if (blinkDelayCounter >= blinkDelay){
+                blinkCounter=Math.max(Math.min(blinkCounter+blinkDir*blinkSpeed*1,blinkT),0);
+            }
+        }
+        //draw background
+        g.setColor(new Color(74,78,71));
         //draw player
+        g.fillRect(0, 0, width, height);
         g.setColor(Color.GREEN);
         Player player = arena.getPlayer();
         g.fillRect(player.getX(), player.getY(), PLAYER_WIDTH, PLAYER_HEIGHT);
@@ -52,6 +93,19 @@ public class ArenaRenderer extends JPanel {
         }
 
         //draw tipsy effects
+        //Blinking
+        if (blinkEnabled){
+            blinkHeight=(int)(((double)blinkCounter/(double)blinkT) *((double)height/2));
+            g.setColor(new Color(0,0,0,242));
+            g.fillRect(0,0, width, blinkHeight);
+            g.fillRect(0,height-blinkHeight, width, blinkHeight);
+            if ((blinkCounter == 0 || blinkCounter==blinkT)  && blinkDelayCounter >= blinkDelay){
+                if (blinkCounter == 0){
+                    blinkDelayCounter=0;
+                }
+                blinkDir*=-1;
+            }
+        }
 
 
     }
@@ -59,26 +113,30 @@ public class ArenaRenderer extends JPanel {
     private void RenderFallObject(FallObject fallObject, Graphics2D g) {
         switch (fallObject.getType()) {
             case 0:
-                g.setColor(Color.GREEN);
+                g.drawImage(imageAspirin, fallObject.getX()-imageAspirin.getWidth(null)/2, fallObject.getY()-imageAspirin.getHeight(null)-1,null);
                 break;//TODO replace with aspirin
             case 1:
                 g.setColor(Color.RED);
+                g.drawImage(imageJager, fallObject.getX()-imageAspirin.getWidth(null)/2, fallObject.getY()-imageAspirin.getHeight(null)-1,null);
                 break;//TODO replace with a picture of some kind of alcohol
             case 2:
                 g.setColor(Color.DARK_GRAY);
+                g.drawImage(imageUnicum, fallObject.getX()-imageAspirin.getWidth(null)/2, fallObject.getY()-imageAspirin.getHeight(null)-1,null);
                 break;//TODO replace with a picture of some kind of alcohol
             case 3:
                 g.setColor(Color.CYAN);
+                g.drawImage(imageTatratea, fallObject.getX()-imageAspirin.getWidth(null)/2, fallObject.getY()-imageAspirin.getHeight(null)-1,null);
                 break;//TODO replace with a picture of some kind of alcohol
             case 4:
                 g.setColor(Color.BLUE);
+                g.drawImage(imageTatratea, fallObject.getX()-imageAspirin.getWidth(null)/2, fallObject.getY()-imageAspirin.getHeight(null)-1,null);
                 break;//TODO replace with a picture of some kind of alcohol
             default:
                 g.setColor(Color.RED);
                 break;
         }
 
-        g.fillOval(fallObject.getX(), fallObject.getY(), FALLOBJECT_WIDTH, FALLOBJECT_HEIGHT);
+//        g.fillOval(fallObject.getX(), fallObject.getY(), FALLOBJECT_WIDTH, FALLOBJECT_HEIGHT);
     }
 
     public BufferedImage blur(BufferedImage buf) {

@@ -95,7 +95,6 @@ public class GameEngine implements MouseMotionListener, Subject {
                     System.out.println("Player got point! points: " + player.getPoints());
                 } else if (fallObject.getY() > Arena.HEIGHT) {
                     player.setMissed(player.getMissed() + 1);
-                    player.setAlcoholLevel(0);
                     deleteObject = true; // set caught to remove from list
                 }
 
