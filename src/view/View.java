@@ -63,7 +63,7 @@ public class View implements Observer {
 
     @Override
     public void update(Subject o) {
-        JOptionPane.showMessageDialog(null, "Congratulations! \nYou had: " + controller.getPoints() + " points", "Info", JOptionPane.INFORMATION_MESSAGE);
+
         controller.ResetGame();
         controller.setPlay(true);
     }
@@ -75,7 +75,6 @@ public class View implements Observer {
         pages.put(PAGENAME.SINGLEPLAYER,createSingleModePage());
         pages.put(PAGENAME.MULTIPLAYER,createMultiModePage());
         pages.put(PAGENAME.MULTIPLAYERSETTINGS,createMultiSettingsPage());
-        pages.put(PAGENAME.TOPSCORESINPUT,createTopScoresInputPage());
         GridBagConstraints c = new GridBagConstraints();
         c.gridx=0;
         c.gridy=0;
@@ -528,13 +527,7 @@ public class View implements Observer {
         headerPanel.setBackground(Color.RED);
         return page;
     }
-    private JPanel createTopScoresInputPage(){
-        JPanel page = new JPanel();
-        GridBagConstraints gbc = new GridBagConstraints();
-        page.setVisible(false);
-        page.setLayout(new GridBagLayout ());
-        return page;
-    }
+
     private MouseListener makeBoldOnHoverListener(){
         MouseListener listener = new MouseAdapter() {
             Font original;

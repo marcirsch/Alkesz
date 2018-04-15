@@ -64,9 +64,14 @@ public class GameEngine implements MouseMotionListener, Subject {
 
         if (isLost()) {
             play = false;
-
-            //TODO Leellenőrizni, hogy benne van e a legjobb 5ben, és ha igen akkor egy inputmezőt felhozni, hogy beírja a nevét
-            topList.add(player.getPoints(), "G.I.JOE");
+            if (topList.getMinScore() < getArena().getPlayer().getPoints() || topList.getItemsInList()<5){
+                String name = JOptionPane.showInputDialog("Congratulations! \n"+
+                        "You had got into the top 5 with " + getPoints() + " points\n"+
+                        "Please enter your name:");
+                topList.add(getArena().getPlayer().getPoints(),name);
+            }else {
+                JOptionPane.showMessageDialog(null, "Congratulations! \nYou had: " + getPoints() + " points", "Info", JOptionPane.INFORMATION_MESSAGE);
+            }
             ((View) observers.get(0)).refreshToplist();
             notifyObservers();
         }
@@ -196,7 +201,7 @@ public class GameEngine implements MouseMotionListener, Subject {
         player.setMissed(0);
         player.setPoints(0);
         player.setAlcoholLevel(0);
-
+        arenaRenderer.setBlinkEnabled(false);
         arena.getFallObjectList().clear();
     }
 

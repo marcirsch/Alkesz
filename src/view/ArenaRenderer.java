@@ -33,7 +33,7 @@ public class ArenaRenderer extends JPanel {
     private int blinkSpeed=50;
     private int blinkDir=1;
     private int blinkDelayCounter=0;
-    private boolean blinkEnabled=true;
+    private boolean blinkEnabled=false;
 
     private Image imageAspirin;
     private Image imageJager;
@@ -96,7 +96,7 @@ public class ArenaRenderer extends JPanel {
         //Blinking
         if (blinkEnabled){
             blinkHeight=(int)(((double)blinkCounter/(double)blinkT) *((double)height/2));
-            g.setColor(new Color(0,0,0,242));
+            g.setColor(new Color(0,0,0,245));
             g.fillRect(0,0, width, blinkHeight);
             g.fillRect(0,height-blinkHeight, width, blinkHeight);
             if ((blinkCounter == 0 || blinkCounter==blinkT)  && blinkDelayCounter >= blinkDelay){
@@ -157,9 +157,11 @@ public class ArenaRenderer extends JPanel {
 
         if (arena.getPlayer().getAlcoholLevel() > 10) {
             bufferedImage = blur(bufferedImage);
+            this.setBlinkEnabled(true);
+            this.blinkSpeed = (arena.getPlayer().getAlcoholLevel())+40;
+        }else{
+            this.setBlinkEnabled(false);
         }
-
-
         g.drawImage(bufferedImage, 0, 0, null);
 
         updateLabels();
@@ -185,5 +187,13 @@ public class ArenaRenderer extends JPanel {
         this.scoreLabel = scoreLabel;
     }
 
+    public void setBlinkEnabled(boolean blinkEnabled) {
+        this.blinkEnabled = blinkEnabled;
+        if (!blinkEnabled){
+            blinkCounter = 0;
+            blinkCounter =0;
+            blinkDir = 1;
+        }
+    }
 
 }
