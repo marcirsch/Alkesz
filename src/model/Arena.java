@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Random;
 
 public class Arena {
-    public static final int HEIGHT = 600 / 25 * 18;
-    public static final int WIDTH = 700;
+    public static final int HEIGHT = View.WINDOW_HEIGHT / 25 * 18;
+    public static final int WIDTH = View.WINDOW_WIDTH;
 
     private Player player;
     private List<FallObject> fallObjectList = new ArrayList<>();

@@ -18,7 +18,7 @@ import java.nio.Buffer;
 
 public class ArenaRenderer extends JPanel {
 
-    public static final int PLAYER_WIDTH = 30;
+    public static final int PLAYER_WIDTH = 60;
     public static final int PLAYER_HEIGHT = 30;
     public static final int FALLOBJECT_WIDTH = 10;
     public static final int FALLOBJECT_HEIGHT = 10;
@@ -27,18 +27,19 @@ public class ArenaRenderer extends JPanel {
     private JLabel alcoholLevelLabel;
     private JLabel missedLabel;
     private Arena arena;
-    private int blinkT=1000;
-    private int blinkCounter=1;
-    private int blinkDelay=2000;
-    private int blinkSpeed=50;
-    private int blinkDir=1;
-    private int blinkDelayCounter=0;
-    private boolean blinkEnabled=false;
+    private int blinkT = 1000;
+    private int blinkCounter = 1;
+    private int blinkDelay = 2000;
+    private int blinkSpeed = 50;
+    private int blinkDir = 1;
+    private int blinkDelayCounter = 0;
+    private boolean blinkEnabled = false;
 
     private Image imageAspirin;
     private Image imageJager;
     private Image imageUnicum;
     private Image imageTatratea;
+    private Image imagePlayer;
 
     public ArenaRenderer(Arena arena) {
         this.arena = arena;
@@ -55,6 +56,8 @@ public class ArenaRenderer extends JPanel {
             imageUnicum = img.getScaledInstance(40, 40, Image.SCALE_DEFAULT);
             img = ImageIO.read(getClass().getResource("/resources/images/Tatratea.png"));
             imageTatratea = img.getScaledInstance(40, 40, Image.SCALE_DEFAULT);
+            img = ImageIO.read(getClass().getResource("/resources/images/DrunkGuy.png"));
+            imagePlayer = img.getScaledInstance(80, 80, Image.SCALE_DEFAULT);
         } catch (IOException e1) {
             e1.printStackTrace();
         }
@@ -64,21 +67,21 @@ public class ArenaRenderer extends JPanel {
         int height = this.getHeight();
         int width = this.getWidth();
         int blinkHeight;
-        if (blinkEnabled){
-            blinkDelayCounter=blinkDelayCounter+blinkSpeed*1;
-            System.out.println(blinkDelayCounter);
-            if (blinkDelayCounter >= blinkDelay){
-                blinkCounter=Math.max(Math.min(blinkCounter+blinkDir*blinkSpeed*1,blinkT),0);
+        if (blinkEnabled) {
+            blinkDelayCounter = blinkDelayCounter + blinkSpeed * 1;
+//            System.out.println(blinkDelayCounter)blinkDelayCounter;
+            if (blinkDelayCounter >= blinkDelay) {
+                blinkCounter = Math.max(Math.min(blinkCounter + blinkDir * blinkSpeed * 1, blinkT), 0);
             }
         }
         //draw background
-        g.setColor(new Color(74,78,71));
+        g.setColor(new Color(74, 78, 71));
         //draw player
         g.fillRect(0, 0, width, height);
-        g.setColor(Color.GREEN);
-        Player player = arena.getPlayer();
-        g.fillRect(player.getX(), player.getY(), PLAYER_WIDTH, PLAYER_HEIGHT);
 
+
+        Player player = arena.getPlayer();
+        RenderPlayer(player, g);
         //draw falling object
         g.setColor(Color.YELLOW);
         try {
@@ -94,16 +97,16 @@ public class ArenaRenderer extends JPanel {
 
         //draw tipsy effects
         //Blinking
-        if (blinkEnabled){
-            blinkHeight=(int)(((double)blinkCounter/(double)blinkT) *((double)height/2));
-            g.setColor(new Color(0,0,0,245));
-            g.fillRect(0,0, width, blinkHeight);
-            g.fillRect(0,height-blinkHeight, width, blinkHeight);
-            if ((blinkCounter == 0 || blinkCounter==blinkT)  && blinkDelayCounter >= blinkDelay){
-                if (blinkCounter == 0){
-                    blinkDelayCounter=0;
+        if (blinkEnabled) {
+            blinkHeight = (int) (((double) blinkCounter / (double) blinkT) * ((double) height / 2));
+            g.setColor(new Color(0, 0, 0, 245));
+            g.fillRect(0, 0, width, blinkHeight);
+            g.fillRect(0, height - blinkHeight, width, blinkHeight);
+            if ((blinkCounter == 0 || blinkCounter == blinkT) && blinkDelayCounter >= blinkDelay) {
+                if (blinkCounter == 0) {
+                    blinkDelayCounter = 0;
                 }
-                blinkDir*=-1;
+                blinkDir *= -1;
             }
         }
 
@@ -113,30 +116,35 @@ public class ArenaRenderer extends JPanel {
     private void RenderFallObject(FallObject fallObject, Graphics2D g) {
         switch (fallObject.getType()) {
             case 0:
-                g.drawImage(imageAspirin, fallObject.getX()-imageAspirin.getWidth(null)/2, fallObject.getY()-imageAspirin.getHeight(null)-1,null);
-                break;//TODO replace with aspirin
+                g.drawImage(imageAspirin, fallObject.getX() - imageAspirin.getWidth(null) / 2, fallObject.getY() - imageAspirin.getHeight(null) - 1, null);
+                break;
             case 1:
                 g.setColor(Color.RED);
-                g.drawImage(imageJager, fallObject.getX()-imageAspirin.getWidth(null)/2, fallObject.getY()-imageAspirin.getHeight(null)-1,null);
-                break;//TODO replace with a picture of some kind of alcohol
+                g.drawImage(imageJager, fallObject.getX() - imageAspirin.getWidth(null) / 2, fallObject.getY() - imageAspirin.getHeight(null) - 1, null);
+                break;
             case 2:
                 g.setColor(Color.DARK_GRAY);
-                g.drawImage(imageUnicum, fallObject.getX()-imageAspirin.getWidth(null)/2, fallObject.getY()-imageAspirin.getHeight(null)-1,null);
-                break;//TODO replace with a picture of some kind of alcohol
+                g.drawImage(imageUnicum, fallObject.getX() - imageAspirin.getWidth(null) / 2, fallObject.getY() - imageAspirin.getHeight(null) - 1, null);
+                break;
             case 3:
                 g.setColor(Color.CYAN);
-                g.drawImage(imageTatratea, fallObject.getX()-imageAspirin.getWidth(null)/2, fallObject.getY()-imageAspirin.getHeight(null)-1,null);
-                break;//TODO replace with a picture of some kind of alcohol
+                g.drawImage(imageTatratea, fallObject.getX() - imageAspirin.getWidth(null) / 2, fallObject.getY() - imageAspirin.getHeight(null) - 1, null);
+                break;
             case 4:
                 g.setColor(Color.BLUE);
-                g.drawImage(imageTatratea, fallObject.getX()-imageAspirin.getWidth(null)/2, fallObject.getY()-imageAspirin.getHeight(null)-1,null);
-                break;//TODO replace with a picture of some kind of alcohol
+                g.drawImage(imageTatratea, fallObject.getX() - imageAspirin.getWidth(null) / 2, fallObject.getY() - imageAspirin.getHeight(null) - 1, null);
+                break;
             default:
                 g.setColor(Color.RED);
                 break;
         }
 
 //        g.fillOval(fallObject.getX(), fallObject.getY(), FALLOBJECT_WIDTH, FALLOBJECT_HEIGHT);
+    }
+
+    private void RenderPlayer(Player player, Graphics2D g) {
+        g.drawImage(imagePlayer, player.getX() - imagePlayer.getWidth(null) / 2 + 30, player.getY() - imagePlayer.getHeight(null) / 2, null);
+//        g.fillRect(player.getX(), player.getY(), PLAYER_WIDTH, PLAYER_HEIGHT);
     }
 
     public BufferedImage blur(BufferedImage buf) {
@@ -158,8 +166,8 @@ public class ArenaRenderer extends JPanel {
         if (arena.getPlayer().getAlcoholLevel() > 10) {
             bufferedImage = blur(bufferedImage);
             this.setBlinkEnabled(true);
-            this.blinkSpeed = (arena.getPlayer().getAlcoholLevel())+40;
-        }else{
+            this.blinkSpeed = (arena.getPlayer().getAlcoholLevel()) + 40;
+        } else {
             this.setBlinkEnabled(false);
         }
         g.drawImage(bufferedImage, 0, 0, null);
@@ -189,9 +197,9 @@ public class ArenaRenderer extends JPanel {
 
     public void setBlinkEnabled(boolean blinkEnabled) {
         this.blinkEnabled = blinkEnabled;
-        if (!blinkEnabled){
+        if (!blinkEnabled) {
             blinkCounter = 0;
-            blinkCounter =0;
+            blinkCounter = 0;
             blinkDir = 1;
         }
     }

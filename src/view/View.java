@@ -35,8 +35,8 @@ public class View implements Observer {
     private PAGENAME currentPage;
 
 //  Constants
-    public static final int WINDOW_WIDTH = 700;
-    public static final int WINDOW_HEIGHT = 600;
+    public static final int WINDOW_WIDTH = 1000;
+    public static final int WINDOW_HEIGHT = 900;
     public static final int WINDOW_X_POS = 10;
     public static final int WINDOW_Y_POS = 10;
 
@@ -123,18 +123,22 @@ public class View implements Observer {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.insets = new Insets(2, 2, 20, 2);
+
         JLabel singleplayerLabel = new JLabel("Lonely alcoholic",JLabel.CENTER);
         singleplayerLabel.setFont(new Font("Comic Sans", Font.ITALIC, 16));
         singleplayerLabel.addMouseListener(makeBoldOnHoverListener());
         singleplayerLabel.addMouseListener(openPageOnClickListener(PAGENAME.SINGLEPLAYER));
         singleplayerLabel.addMouseListener(startGameOnClickListener());
+
         JLabel multiplayerLabel = new JLabel("Drink with buddy",JLabel.CENTER);
         multiplayerLabel.addMouseListener(makeBoldOnHoverListener());
         multiplayerLabel.addMouseListener(openPageOnClickListener(PAGENAME.MULTIPLAYERSETTINGS));
+
         multiplayerLabel.setFont(new Font("Comic Sans", Font.ITALIC, 16));
         JLabel topscoresLabel = new JLabel("Boozy Hall of Fame",JLabel.CENTER);
         topscoresLabel.addMouseListener(makeBoldOnHoverListener());
         topscoresLabel.addMouseListener(openPageOnClickListener(PAGENAME.TOPSCORES));
+
         topscoresLabel.setFont(new Font("Comic Sans", Font.ITALIC, 16));
         navigationPanel.add(singleplayerLabel,gbc);
         gbc.gridy++;
@@ -142,7 +146,7 @@ public class View implements Observer {
         gbc.gridy++;
         navigationPanel.add(topscoresLabel,gbc);
 
-        Map<GAME_DIFFICULTY, JLabel> difficultyLabels = new HashMap<GAME_DIFFICULTY, JLabel>();;
+        Map<GAME_DIFFICULTY, JLabel> difficultyLabels = new HashMap<GAME_DIFFICULTY, JLabel>();
         difficultyPanel.setBackground(Color.RED);
         difficultyPanel.setLayout(new GridBagLayout());
         gbc.fill = GridBagConstraints.HORIZONTAL;

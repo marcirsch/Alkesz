@@ -64,12 +64,12 @@ public class GameEngine implements MouseMotionListener, Subject {
 
         if (isLost()) {
             play = false;
-            if (topList.getMinScore() < getArena().getPlayer().getPoints() || topList.getItemsInList()<5){
-                String name = JOptionPane.showInputDialog("Congratulations! \n"+
-                        "You had got into the top 5 with " + getPoints() + " points\n"+
+            if (topList.getMinScore() < getArena().getPlayer().getPoints() || topList.getItemsInList() < 5) {
+                String name = JOptionPane.showInputDialog("Congratulations! \n" +
+                        "You had got into the top 5 with " + getPoints() + " points\n" +
                         "Please enter your name:");
-                topList.add(getArena().getPlayer().getPoints(),name);
-            }else {
+                topList.add(getArena().getPlayer().getPoints(), name);
+            } else {
                 JOptionPane.showMessageDialog(null, "Congratulations! \nYou had: " + getPoints() + " points", "Info", JOptionPane.INFORMATION_MESSAGE);
             }
             ((View) observers.get(0)).refreshToplist();
@@ -96,10 +96,14 @@ public class GameEngine implements MouseMotionListener, Subject {
                 if (isCollision(fallObject)) {
                     player.setPoints(player.getPoints() + 1);
                     player.setAlcoholLevel(player.getAlcoholLevel() + 1);
+                    if (fallObject.getType() == 0) {
+                        player.setAlcoholLevel(0);
+                    }
                     deleteObject = true;
                     System.out.println("Player got point! points: " + player.getPoints());
                 } else if (fallObject.getY() > Arena.HEIGHT) {
                     player.setMissed(player.getMissed() + 1);
+//                    player.setAlcoholLevel(0);
                     deleteObject = true; // set caught to remove from list
                 }
 
@@ -193,6 +197,7 @@ public class GameEngine implements MouseMotionListener, Subject {
     private boolean isCollision(FallObject fallObject) {
         Rectangle fallObjRect = new Rectangle(fallObject.getX(), fallObject.getY(), ArenaRenderer.FALLOBJECT_WIDTH, ArenaRenderer.FALLOBJECT_HEIGHT);
         Rectangle playerRect = new Rectangle(player.getX(), player.getY(), ArenaRenderer.PLAYER_WIDTH, ArenaRenderer.PLAYER_HEIGHT);
+
         return fallObjRect.intersects(playerRect);
     }
 
