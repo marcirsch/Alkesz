@@ -2,8 +2,10 @@ package view;
 
 
 import controller.GameEngine;
+import model.Player;
 import model.Settings.GAME_DIFFICULTY;
 import model.Settings.SERVER_CLIENT_ROLE;
+import network.Client;
 import network.Server;
 
 import javax.swing.*;
@@ -378,8 +380,25 @@ public class View implements Observer {
                 if (ipInputField.getInputVerifier().verify(ipInputField)){
                     controller.settings.setRemoteIPAddress(ipInputField.getText());
                     System.out.println("Server ip to connect: "+ipInputField.getText());
-                    Thread thread = new Thread(new Server());
-                    thread.start();
+
+                    if(controller.settings.getRole() == SERVER_CLIENT_ROLE.CLIENT){
+
+
+                        controller.getClient().ConnectToServer(ipInputField.getText());
+                        Thread clientthread = new Thread(controller.getClient());
+                        clientthread.start();
+
+
+                    }
+
+                    if(controller.settings.getRole() == SERVER_CLIENT_ROLE.SERVER){
+
+                        controller.getServer().StartServer();
+                        Thread serverthread = new Thread(controller.getServer());
+                        serverthread.start();
+
+                    }
+
                 }
             }
         } );
@@ -749,6 +768,7 @@ public class View implements Observer {
         }
     }
     public static void main(String[] args) {
+
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
