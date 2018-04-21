@@ -4,6 +4,7 @@ package view;
 import controller.GameEngine;
 import model.Settings.GAME_DIFFICULTY;
 import model.Settings.SERVER_CLIENT_ROLE;
+import network.Server;
 
 import javax.swing.*;
 import javax.swing.event.DocumentListener;
@@ -377,6 +378,8 @@ public class View implements Observer {
                 if (ipInputField.getInputVerifier().verify(ipInputField)){
                     controller.settings.setRemoteIPAddress(ipInputField.getText());
                     System.out.println("Server ip to connect: "+ipInputField.getText());
+                    Thread thread = new Thread(new Server());
+                    thread.start();
                 }
             }
         } );

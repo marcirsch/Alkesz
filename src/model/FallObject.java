@@ -1,6 +1,8 @@
 package model;
 
-public class FallObject {
+import java.io.Serializable;
+
+public class FallObject implements Serializable {
     private int x;
     private int y;
 
