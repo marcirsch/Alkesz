@@ -12,38 +12,61 @@ import java.util.List;
 public class Server implements Runnable {
     private ServerSocket serverSocket = null;
     private Socket socket = null;
+    private ObjectOutputStream outStream = null;
     private ObjectInputStream inStream = null;
     private Player player;
     private List<FallObject> fallobjectlist;
+    private Container container;
+    //private testobject to;
 
     public Server() {
 
     }
 
-    public Player getPlayer() {
-        return player;
-    }
+    public void StartServer() {
 
-    public List<FallObject> getFallobjectlist() {
-        return fallobjectlist;
-    }
+        System.out.println("Start server");
 
-    @Override
-    public void run() {
         try {
             serverSocket = new ServerSocket(7777);
             socket = serverSocket.accept();
             System.out.println("Connected");
             inStream = new ObjectInputStream(socket.getInputStream());
+            outStream = new ObjectOutputStream(socket.getOutputStream());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void SendTest(){
+
+        System.out.println("Player and FallObjectList to be written = " + to);
+
+        try {
+            outputStream.writeObject(to);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    @Override
+    public void run() {
+        try {
 
             while (true) {
 
-                player = (Player) inStream.readObject();
-                fallobjectlist = (List<FallObject>) inStream.readObject();
-                //System.out.println("Object received = " + player);
-                //System.out.println("Object received = " + fallobjectlist);
-                System.out.println(fallobjectlist.size());
-                System.out.println(player.getAlcoholLevel());
+               /* container = (Container) inStream.readObject();
+                System.out.println("Object received = " + container);
+                System.out.println(container.getX());
+                System.out.println(container.getAlcoholLevel());
+                */
+
+                testobject to = (testobject) inStream.readObject();
+                System.out.println("Object rec:" + to);
+                System.out.println("Object" + to.getValue());
 
             }
 
@@ -55,5 +78,10 @@ public class Server implements Runnable {
             cn.printStackTrace();
         }
 
+    }
+
+
+    public Container getContainer() {
+        return container;
     }
 }

@@ -1,10 +1,11 @@
 package network;
 
+
 import model.FallObject;
 import model.Player;
 
 import java.io.IOException;
-//import java.io.ObjectInputStream;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
@@ -12,25 +13,26 @@ import java.util.List;
 
 
 public class Client {
+    private Container container;
+    private testobject to;
     private String ip;
     private Socket socket = null;
-    //private ObjectInputStream inputStream = null;
+    private ObjectInputStream inputStream = null;
     private ObjectOutputStream outputStream = null;
     private boolean isConnected = false;
-    private testobject to;
 
-    public Client(String ipaddress) {
-        this.ip = ipaddress;
 
+    public Client() {
+        to = new testobject(3,"abc");
     }
 
 
-    public void ConnectToServer() {
+    public void ConnectToServer(String ipaddress) {
 
         while (!isConnected) {
             try {
                 System.out.println("Try to connect to:" + ip);
-                socket = new Socket(ip, 7777);
+                socket = new Socket(ipaddress, 7777);
                 System.out.println("Connected!");
                 isConnected = true;
                 outputStream = new ObjectOutputStream(socket.getOutputStream());
@@ -59,11 +61,17 @@ public class Client {
 
     }
 
-    public void SendPlayerData(Player player) {
+    public void SendData(Player player, List<FallObject> list) {
 
-        System.out.println("Player to be written = " + player);
+        container.setX(player.getX());
+        container.setMissed(player.getMissed());
+        container.setAlcoholLevel(player.getAlcoholLevel());
+        container.setFallObjectList(list);
+
+        System.out.println("Player and FallObjectList to be written = " + container);
+
         try {
-            outputStream.writeObject(player);
+            outputStream.writeObject(container);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -71,24 +79,18 @@ public class Client {
 
     }
 
-    public void SendFallObjectList(List<FallObject> list) {
-        System.out.println("List to be written = " + list);
+    public void SendTest(){
+
+        System.out.println("Player and FallObjectList to be written = " + to);
 
         try {
-            outputStream.writeObject(list);
+            outputStream.writeObject(to);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
     }
 
-    public void SendAll(Player player, List<FallObject> list) {
 
-        System.out.println("Player and list sending = " + player + list);
-        try {
-            outputStream.writeObject(player);
-            outputStream.writeObject(list);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }
