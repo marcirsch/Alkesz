@@ -16,8 +16,8 @@ public class Arena {
     private Random random = new Random(System.currentTimeMillis());
 
 
-    public Arena(Player player) {
-        this.player = player;
+    public Arena() {
+        this.player = new Player();
 
     }
 

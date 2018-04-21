@@ -20,7 +20,6 @@ import java.util.Random;
 public class GameEngine implements MouseMotionListener, Subject {
 
     private Arena arena;
-    private Player player;
     private ArenaRenderer arenaRenderer;
     private TipsyOffsetGenerator tipsyOffsetGenerator;
 
@@ -37,11 +36,12 @@ public class GameEngine implements MouseMotionListener, Subject {
     private int PlayerXPosition;
 
     public GameEngine() {
-        player = new Player();
-        player.setX(Arena.WIDTH / 2);
-        player.setY(Arena.HEIGHT - 30);
 
-        arena = new Arena(player);
+
+        arena = new Arena();
+        arena.getPlayer().setX(Arena.WIDTH / 2);
+        arena.getPlayer().setY(Arena.HEIGHT - 30);
+
         settings = new Settings();
         topList = new TopList();
 
@@ -55,7 +55,7 @@ public class GameEngine implements MouseMotionListener, Subject {
         timer.setDelay(getDifficultyDelay());
         timer.start();
 
-        tipsyOffsetGenerator.setAlcoholLevel(player.getAlcoholLevel());
+        tipsyOffsetGenerator.setAlcoholLevel(arena.getPlayer().getAlcoholLevel());
 
 
         if (play) {
@@ -77,8 +77,8 @@ public class GameEngine implements MouseMotionListener, Subject {
         }
 
 
-        player.setX(PlayerXPosition);
-        player.setX(PlayerXPosition + tipsyOffsetGenerator.getValue());
+        arena.getPlayer().setX(PlayerXPosition);
+        arena.getPlayer().setX(PlayerXPosition + tipsyOffsetGenerator.getValue());
         arenaRenderer.repaint();
     }
 
@@ -94,16 +94,16 @@ public class GameEngine implements MouseMotionListener, Subject {
                 boolean deleteObject = false;
 
                 if (isCollision(fallObject)) {
-                    player.setPoints(player.getPoints() + 1);
-                    player.setAlcoholLevel(player.getAlcoholLevel() + 1);
+                    arena.getPlayer().setPoints(arena.getPlayer().getPoints() + 1);
+                    arena.getPlayer().setAlcoholLevel(arena.getPlayer().getAlcoholLevel() + 1);
                     if (fallObject.getType() == 0) {
-                        player.setAlcoholLevel(0);
+                        arena.getPlayer().setAlcoholLevel(0);
                     }
                     deleteObject = true;
-                    System.out.println("Player got point! points: " + player.getPoints());
+                    System.out.println("Player got point! points: " + arena.getPlayer().getPoints());
                 } else if (fallObject.getY() > Arena.HEIGHT) {
-                    player.setMissed(player.getMissed() + 1);
-//                    player.setAlcoholLevel(0);
+                    arena.getPlayer().setMissed(arena.getPlayer().getMissed() + 1);
+//                    arena.getPlayer().setAlcoholLevel(0);
                     deleteObject = true; // set caught to remove from list
                 }
 
@@ -176,7 +176,7 @@ public class GameEngine implements MouseMotionListener, Subject {
 
 
     private boolean isLost() {
-        return (player.getMissed() > Settings.MISSED_LOSE_THRESHOLD);
+        return (arena.getPlayer().getMissed() > Settings.MISSED_LOSE_THRESHOLD);
     }
 
     private void addNewFallObject() {
@@ -196,22 +196,22 @@ public class GameEngine implements MouseMotionListener, Subject {
 
     private boolean isCollision(FallObject fallObject) {
         Rectangle fallObjRect = new Rectangle(fallObject.getX(), fallObject.getY(), ArenaRenderer.FALLOBJECT_WIDTH, ArenaRenderer.FALLOBJECT_HEIGHT);
-        Rectangle playerRect = new Rectangle(player.getX(), player.getY(), ArenaRenderer.PLAYER_WIDTH, ArenaRenderer.PLAYER_HEIGHT);
+        Rectangle playerRect = new Rectangle(arena.getPlayer().getX(), arena.getPlayer().getY(), ArenaRenderer.PLAYER_WIDTH, ArenaRenderer.PLAYER_HEIGHT);
 
         return fallObjRect.intersects(playerRect);
     }
 
 
     public void ResetGame() {
-        player.setMissed(0);
-        player.setPoints(0);
-        player.setAlcoholLevel(0);
+        arena.getPlayer().setMissed(0);
+        arena.getPlayer().setPoints(0);
+        arena.getPlayer().setAlcoholLevel(0);
         arenaRenderer.setBlinkEnabled(false);
         arena.getFallObjectList().clear();
     }
 
     public int getPoints() {
-        return player.getPoints();
+        return arena.getPlayer().getPoints();
     }
 
     public boolean isPlay() {
@@ -233,7 +233,7 @@ public class GameEngine implements MouseMotionListener, Subject {
 
     @Override
     public void mouseMoved(MouseEvent mouseEvent) {
-//        player.setX(mouseEvent.getX());
+//        arena.getPlayer().setX(mouseEvent.getX());
         PlayerXPosition = mouseEvent.getX();
     }
 
