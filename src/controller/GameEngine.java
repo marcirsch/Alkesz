@@ -1,6 +1,8 @@
 package controller;
 
 import model.*;
+import network.Client;
+import network.Server;
 import view.ArenaRenderer;
 import view.Observer;
 import view.Subject;
@@ -22,7 +24,8 @@ public class GameEngine implements MouseMotionListener, Subject {
     private Arena arena;
     private ArenaRenderer arenaRenderer;
     private TipsyOffsetGenerator tipsyOffsetGenerator;
-
+    private Client client;
+    private Server server;
     public Settings settings;
     public TopList topList;
 
@@ -37,6 +40,8 @@ public class GameEngine implements MouseMotionListener, Subject {
 
     public GameEngine() {
 
+        client = new Client();
+        server = new Server();
 
         arena = new Arena();
         arena.getPlayer().setX(Arena.WIDTH / 2);
@@ -54,9 +59,8 @@ public class GameEngine implements MouseMotionListener, Subject {
     private void Update() {
         timer.setDelay(getDifficultyDelay());
         timer.start();
-
         tipsyOffsetGenerator.setAlcoholLevel(arena.getPlayer().getAlcoholLevel());
-
+        client.SendTest();
 
         if (play) {
             UpdateFallObjects();
@@ -80,6 +84,7 @@ public class GameEngine implements MouseMotionListener, Subject {
         arena.getPlayer().setX(PlayerXPosition);
         arena.getPlayer().setX(PlayerXPosition + tipsyOffsetGenerator.getValue());
         arenaRenderer.repaint();
+
     }
 
 
@@ -174,6 +179,14 @@ public class GameEngine implements MouseMotionListener, Subject {
         return delay;
     }
 
+
+    public Client getClient() {
+        return client;
+    }
+
+    public Server getServer() {
+        return server;
+    }
 
     private boolean isLost() {
         return (arena.getPlayer().getMissed() > Settings.MISSED_LOSE_THRESHOLD);
