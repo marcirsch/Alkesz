@@ -1,5 +1,6 @@
 package network;
 
+import model.Arena;
 import model.FallObject;
 import model.Player;
 
@@ -14,10 +15,10 @@ public class Server implements Runnable {
     private Socket socket = null;
     private ObjectOutputStream outStream = null;
     private ObjectInputStream inStream = null;
-    private Player player;
-    private List<FallObject> fallobjectlist;
-    private Container container;
-    private testobject to;
+   private Arena arena_tx;
+   private Arena arena_rx;
+    // private Container container;
+  //  private testobject to;
 
     public Server() {
     to = new testobject(2,"xyz");
@@ -39,7 +40,7 @@ public class Server implements Runnable {
         }
     }
 
-    public void SendTest(){
+ /*   public void SendTest(){
 
         System.out.println("Player and FallObjectList to be written = " + to);
 
@@ -49,6 +50,25 @@ public class Server implements Runnable {
             e.printStackTrace();
         }
 
+
+    }
+*/
+
+    public void SendDatatoClient(Arena arena) {
+
+        /*container.setX(player.getX());
+        container.setMissed(player.getMissed());
+        container.setAlcoholLevel(player.getAlcoholLevel());
+        container.setFallObjectList(list);
+
+        System.out.println("Player and FallObjectList to be written = " + container);
+
+        try {
+            outputStream.writeObject(container);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    */
 
     }
 
@@ -81,7 +101,4 @@ public class Server implements Runnable {
     }
 
 
-    public Container getContainer() {
-        return container;
-    }
 }
