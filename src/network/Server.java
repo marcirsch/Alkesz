@@ -17,10 +17,10 @@ public class Server implements Runnable {
     private Player player;
     private List<FallObject> fallobjectlist;
     private Container container;
-    //private testobject to;
+    private testobject to;
 
     public Server() {
-
+    to = new testobject(2,"xyz");
     }
 
     public void StartServer() {
@@ -44,7 +44,7 @@ public class Server implements Runnable {
         System.out.println("Player and FallObjectList to be written = " + to);
 
         try {
-            outputStream.writeObject(to);
+            outStream.writeObject(to);
         } catch (IOException e) {
             e.printStackTrace();
         }

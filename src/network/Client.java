@@ -12,7 +12,7 @@ import java.net.SocketException;
 import java.util.List;
 
 
-public class Client {
+public class Client implements Runnable {
     private Container container;
     private testobject to;
     private String ip;
@@ -35,6 +35,7 @@ public class Client {
                 socket = new Socket(ipaddress, 7777);
                 System.out.println("Connected!");
                 isConnected = true;
+                inputStream = new ObjectInputStream(socket.getInputStream());
                 outputStream = new ObjectOutputStream(socket.getOutputStream());
 
             } catch (SocketException se) {
@@ -93,4 +94,30 @@ public class Client {
     }
 
 
+    @Override
+    public void run() {
+        try {
+
+            while (true) {
+
+               /* container = (Container) inStream.readObject();
+                System.out.println("Object received = " + container);
+                System.out.println(container.getX());
+                System.out.println(container.getAlcoholLevel());
+                */
+
+                testobject to = (testobject) inputStream.readObject();
+                System.out.println("Object rec:" + to);
+                System.out.println("Object" + to.getValue());
+
+            }
+
+        } catch (SocketException se) {
+            System.exit(0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException cn) {
+            cn.printStackTrace();
+        }
+    }
 }
