@@ -2,11 +2,12 @@ package model;
 
 import view.View;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Arena {
+public class Arena implements Serializable {
     public static final int HEIGHT = View.WINDOW_HEIGHT / 25 * 18;
     public static final int WIDTH = View.WINDOW_WIDTH;
 

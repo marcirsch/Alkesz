@@ -1,6 +1,7 @@
 package network;
 
 
+import model.Arena;
 import model.FallObject;
 import model.Player;
 
@@ -14,13 +15,14 @@ import java.util.concurrent.TimeUnit;
 
 
 public class Client implements Runnable {
-    private Container container;
-    private testobject to;
+   // private Container container;
     private String ip;
     private Socket socket = null;
     private ObjectInputStream inputStream = null;
     private ObjectOutputStream outputStream = null;
     private boolean isConnected = false;
+    private Arena arena_tx;
+    private Arena arena_rx;
 
 
     public Client() {
@@ -63,9 +65,9 @@ public class Client implements Runnable {
 
     }
 
-    public void SendData(Player player, List<FallObject> list) {
+    public void SendDatatoServer(Arena arena) {
 
-        container.setX(player.getX());
+      /*  container.setX(player.getX());
         container.setMissed(player.getMissed());
         container.setAlcoholLevel(player.getAlcoholLevel());
         container.setFallObjectList(list);
@@ -77,11 +79,12 @@ public class Client implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        */
 
 
     }
 
-    public void SendTest(){
+   /* public void SendTest(){
 
         System.out.println("Player and FallObjectList to be written = " + to);
 
@@ -92,7 +95,7 @@ public class Client implements Runnable {
         }
 
 
-    }
+    }*/
 
 
     @Override

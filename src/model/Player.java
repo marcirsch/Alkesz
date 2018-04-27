@@ -1,8 +1,7 @@
 package model;
 
-import java.io.Serializable;
 
-public class Player implements Serializable {
+public class Player {
     private int x;
     private int y;
 
