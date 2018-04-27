@@ -10,6 +10,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 public class Client implements Runnable {
@@ -119,5 +120,21 @@ public class Client implements Runnable {
         } catch (ClassNotFoundException cn) {
             cn.printStackTrace();
         }
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        Client client;
+
+        client = new Client();
+
+        client.ConnectToServer("localhost");
+        Thread ct = new Thread(client);
+
+        while(true){
+            TimeUnit.SECONDS.sleep(3);
+            client.SendTest();
+
+        }
+
     }
 }

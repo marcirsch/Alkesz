@@ -7,7 +7,9 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.sql.Time;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class Server implements Runnable {
     private ServerSocket serverSocket = null;
@@ -20,7 +22,7 @@ public class Server implements Runnable {
     private testobject to;
 
     public Server() {
-    to = new testobject(2,"xyz");
+        to = new testobject(2, "xyz");
     }
 
     public void StartServer() {
@@ -39,7 +41,7 @@ public class Server implements Runnable {
         }
     }
 
-    public void SendTest(){
+    public void SendTest() {
 
         System.out.println("Player and FallObjectList to be written = " + to);
 
@@ -63,10 +65,14 @@ public class Server implements Runnable {
                 System.out.println(container.getX());
                 System.out.println(container.getAlcoholLevel());
                 */
+                if(inStream.available() > 0) {
+                    testobject to = (testobject) inStream.readObject();
 
-                testobject to = (testobject) inStream.readObject();
-                System.out.println("Object rec:" + to);
-                System.out.println("Object" + to.getValue());
+
+                    System.out.println("Object rec:" + to);
+                    System.out.println("Object" + to.getValue());
+                }
+                TimeUnit.MILLISECONDS.sleep(100);
 
             }
 
@@ -74,8 +80,8 @@ public class Server implements Runnable {
             System.exit(0);
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException cn) {
-            cn.printStackTrace();
+        } catch( Exception e){
+
         }
 
     }
@@ -83,5 +89,25 @@ public class Server implements Runnable {
 
     public Container getContainer() {
         return container;
+    }
+
+
+    public static void main(String[] args) throws InterruptedException {
+        Server server = new Server();
+
+
+
+        server.StartServer();
+        TimeUnit.SECONDS.sleep(3);
+
+        Thread ct = new Thread(server);
+        ct.start();
+
+        while(true){
+            TimeUnit.SECONDS.sleep(3);
+//            server.SendTest();
+
+        }
+
     }
 }

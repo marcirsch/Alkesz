@@ -16,7 +16,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.Buffer;
 
-public class ArenaRenderer extends JPanel {
+public class ArenaRenderer extends JPanel implements Runnable {
 
     public static final int PLAYER_WIDTH = 60;
     public static final int PLAYER_HEIGHT = 30;
@@ -41,6 +41,8 @@ public class ArenaRenderer extends JPanel {
     private Image imageTatratea;
     private Image imagePlayer;
 
+    private Timer timer; // timer is used for screen update
+
     public ArenaRenderer(Arena arena) {
         this.arena = arena;
 
@@ -61,6 +63,9 @@ public class ArenaRenderer extends JPanel {
         } catch (IOException e1) {
             e1.printStackTrace();
         }
+
+        timer = new Timer(5, e -> repaint());
+        timer.start();
     }
 
     private void RenderArena(Graphics2D g) {
@@ -97,6 +102,7 @@ public class ArenaRenderer extends JPanel {
 
         //draw tipsy effects
         //Blinking
+
         if (blinkEnabled) {
             blinkHeight = (int) (((double) blinkCounter / (double) blinkT) * ((double) height / 2));
             g.setColor(new Color(0, 0, 0, 245));
@@ -204,4 +210,8 @@ public class ArenaRenderer extends JPanel {
         }
     }
 
+    @Override
+    public void run() {
+
+    }
 }
