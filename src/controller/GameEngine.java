@@ -60,7 +60,7 @@ public class GameEngine implements MouseMotionListener, Subject {
         timer.setDelay(getDifficultyDelay());
         timer.start();
         tipsyOffsetGenerator.setAlcoholLevel(arena.getPlayer().getAlcoholLevel());
-        client.SendTest();
+
 
         if (play) {
             UpdateFallObjects();
@@ -100,10 +100,7 @@ public class GameEngine implements MouseMotionListener, Subject {
 
                 if (isCollision(fallObject)) {
                     arena.getPlayer().setPoints(arena.getPlayer().getPoints() + 1);
-                    arena.getPlayer().setAlcoholLevel(arena.getPlayer().getAlcoholLevel() + 1);
-                    if (fallObject.getType() == 0) {
-                        arena.getPlayer().setAlcoholLevel(0);
-                    }
+                    arena.getPlayer().setAlcoholLevel(arena.getPlayer().getAlcoholLevel() + fallObject.getAlcLevelCoef());
                     deleteObject = true;
                     System.out.println("Player got point! points: " + arena.getPlayer().getPoints());
                 } else if (fallObject.getY() > Arena.HEIGHT) {
@@ -202,6 +199,27 @@ public class GameEngine implements MouseMotionListener, Subject {
             fallObject.setX(random.nextInt(Arena.WIDTH));
             fallObject.setVelocity(1);
             fallObject.setType(random.nextInt(5));
+
+            switch (fallObject.getType()) {
+                case 0:
+                    fallObject.setAlcLevelCoef(-3);
+                    break;
+                case 1:
+                    fallObject.setAlcLevelCoef(1);
+                    break;
+                case 2:
+                    fallObject.setAlcLevelCoef(2);
+                    break;
+                case 3:
+                    fallObject.setAlcLevelCoef(3);
+                    break;
+                case 4:
+                    fallObject.setAlcLevelCoef(3);
+                    break;
+                default:
+                    fallObject.setAlcLevelCoef(1);
+                    break;
+            }
 
             fallObjectList.add(fallObject);
         }

@@ -26,7 +26,7 @@ public class Client implements Runnable {
 
 
     public Client() {
-        to = new testobject(3,"abc");
+//        to = new testobject(3,"abc");
     }
 
 
@@ -135,8 +135,6 @@ public class Client implements Runnable {
 
         while(true){
             TimeUnit.SECONDS.sleep(3);
-            client.SendTest();
-
         }
 
     }

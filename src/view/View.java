@@ -121,7 +121,7 @@ public class View implements Observer {
         headerPanel.add(headerLabel,gbc);
 
         navigationPanel.setLayout(new GridBagLayout());
-        navigationPanel.setBackground(Color.GREEN);
+        navigationPanel.setBackground(Color.LIGHT_GRAY);
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -150,7 +150,7 @@ public class View implements Observer {
         navigationPanel.add(topscoresLabel,gbc);
 
         Map<GAME_DIFFICULTY, JLabel> difficultyLabels = new HashMap<GAME_DIFFICULTY, JLabel>();
-        difficultyPanel.setBackground(Color.RED);
+        difficultyPanel.setBackground(Color.LIGHT_GRAY);
         difficultyPanel.setLayout(new GridBagLayout());
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
@@ -335,7 +335,7 @@ public class View implements Observer {
         clientLabel.setFont(new Font("Comic Sans", Font.ITALIC, 16));
         gbc.gridy++;
         rolePanel.add(clientLabel,gbc);
-        rolePanel.setBackground(Color.GREEN);
+        rolePanel.setBackground(Color.LIGHT_GRAY);
 
 
 

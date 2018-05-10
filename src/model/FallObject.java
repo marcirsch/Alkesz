@@ -9,6 +9,16 @@ public class FallObject {
     private int velocity;
     private int type;
 
+    public int getAlcLevelCoef() {
+        return alcLevelCoef;
+    }
+
+    public void setAlcLevelCoef(int alcLevelCoef) {
+        this.alcLevelCoef = alcLevelCoef;
+    }
+
+    private int alcLevelCoef = 1;
+
     public int getType() {
         return type;
     }

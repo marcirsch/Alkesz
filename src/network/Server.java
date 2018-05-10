@@ -21,7 +21,7 @@ public class Server implements Runnable {
   //  private testobject to;
 
     public Server() {
-    to = new testobject(2,"xyz");
+//    to = new testobject(2,"xyz");
     }
 
     public void StartServer() {
