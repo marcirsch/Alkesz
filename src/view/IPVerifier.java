@@ -4,6 +4,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.StringTokenizer;
 
+/**
+ * This class implements a input verifier which is used for verifing the IP address given on the multiplayer settings
+ * page if the network role is client.
+ * @see InputVerifier
+ */
 public class IPVerifier extends InputVerifier {
     public boolean verify(JComponent input) {
         if (input instanceof JFormattedTextField) {

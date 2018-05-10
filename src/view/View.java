@@ -21,7 +21,9 @@ import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Map;
 
-//Gamepages enumaration
+/**
+ * Enumeration used for giving the pages a unique identifier.
+ */
 enum PAGENAME{  MENU,
                 TOPSCORES,
                 TOPSCORESINPUT,
@@ -29,7 +31,13 @@ enum PAGENAME{  MENU,
                 MULTIPLAYER ,
                 MULTIPLAYERSETTINGS}
 
-
+/**
+ * <h1>Graphical User Interface</h1>
+ * This class implements the gui for the game.
+ * @author  Gergő Fehér
+ * @version 1.0
+ * @since   2018-04-25
+ */
 public class View implements Observer {
     private JFrame window;
     private GameEngine controller;
@@ -42,7 +50,10 @@ public class View implements Observer {
     public static final int WINDOW_HEIGHT = 900;
     public static final int WINDOW_X_POS = 10;
     public static final int WINDOW_Y_POS = 10;
-
+    /**
+     * The constructor of the GUI. It creates all the pages, sets the layout as well as all the listeners for the
+     * buttons. At last it opens the main page.
+     */
     public View() {
         window = new JFrame();
 
@@ -59,8 +70,6 @@ public class View implements Observer {
         currentPage=PAGENAME.MENU;
         pages = createPages();
         showPage(PAGENAME.MENU);
-
-
     }
 
 
@@ -70,6 +79,13 @@ public class View implements Observer {
         controller.ResetGame();
         controller.setPlay(true);
     }
+
+    /**
+     * This method invokes the creatator methods for the different pages and adds them to the application window.
+     * @see Map
+     * @see PAGENAME
+     * @return Map<PAGENAME, JPanel> This returns a PAGENAME to JPanel Map, which is later used for opening the pages.
+     */
     private Map<PAGENAME, JPanel> createPages(){
         Map<PAGENAME, JPanel> pages = new HashMap<PAGENAME,JPanel>();
 
@@ -90,7 +106,11 @@ public class View implements Observer {
         }
         return pages;
     }
-
+    /**
+     * This method opens the page given as parameter.
+     * @param pageToShow The PAGENAME of the page to show.
+     * @see PAGENAME
+     */
     private void showPage(PAGENAME pageToShow){
         pages.get(pageToShow).setVisible(true);
         if (pageToShow!=currentPage){
@@ -98,7 +118,10 @@ public class View implements Observer {
         }
         currentPage=pageToShow;
     }
-
+    /**
+     * This method creates the menu page.
+     * @return JPanel The JPanel object of the menu page.
+     */
     private JPanel createMenuPage(){
         JPanel page = new JPanel();
         GridBagConstraints gbc = new GridBagConstraints();
@@ -204,6 +227,10 @@ public class View implements Observer {
 
         return page;
     }
+    /**
+     * This method creates the topscores page.
+     * @return JPanel The JPanel object of the topscores page.
+     */
     private JPanel createTopScoresPage(){
         JPanel page = new JPanel();
         GridBagConstraints gbc = new GridBagConstraints();
@@ -257,6 +284,10 @@ public class View implements Observer {
 
         return page;
     }
+    /**
+     * This method creates the multiplayer settings page.
+     * @return JPanel The JPanel object of the multiplayer settings page.
+     */
     private JPanel createMultiSettingsPage(){
         JPanel page = new JPanel();
         GridBagConstraints gbc = new GridBagConstraints();
@@ -409,6 +440,10 @@ public class View implements Observer {
         connectPanel.add(connectBtn,gbc);
         return page;
     }
+    /**
+     * This method creates the singleplayer page.
+     * @return JPanel The JPanel object of the singleplayer page.
+     */
     private JPanel createSingleModePage(){
         JPanel page = new JPanel();
         GridBagConstraints gbc = new GridBagConstraints();
@@ -508,6 +543,10 @@ public class View implements Observer {
 
         return page;
     }
+    /**
+     * This method creates the multiplayer page.
+     * @return JPanel The JPanel object of the multiplayer page.
+     */
     private JPanel createMultiModePage(){
         JPanel page = new JPanel();
         GridBagConstraints gbc = new GridBagConstraints();
@@ -554,6 +593,10 @@ public class View implements Observer {
         return page;
     }
 
+    /**
+     * This method creates a listener responsible for making a label bold on hover.
+     * @return MouseListener The MouseListener object.
+     */
     private MouseListener makeBoldOnHoverListener(){
         MouseListener listener = new MouseAdapter() {
             Font original;
@@ -574,6 +617,12 @@ public class View implements Observer {
         };
         return listener;
     }
+    /**
+     * This method creates a listener that is responsible for opening the page given as a param when the object
+     * it is assigned gets clicked.
+     * @param pageToShow The page to show upon click
+     * @return MouseListener The MouseListener object.
+     */
     private MouseListener openPageOnClickListener(PAGENAME pageToShow){
         MouseListener listener = new MouseAdapter() {
             @Override
@@ -583,6 +632,14 @@ public class View implements Observer {
         };
         return listener;
     }
+    /**
+     * This method creates a listener that is responsible for changing the difficulty setting to the given param,
+     * when the object it is assigned gets clicked. It also changes the font of the appropriate label, so it more
+     * visible, which is the active setting.
+     * @param difficulty The difficulty to set
+     * @param difficultyLabels The GAME_DIFFICULTY to JLabel map used for setting the proper font of the labels.
+     * @return MouseListener The MouseListener object.
+     */
     private MouseListener setDifficultyListener(GAME_DIFFICULTY difficulty, Map<GAME_DIFFICULTY, JLabel> difficultyLabels){
         MouseListener listener = new MouseAdapter() {
             Font font;
@@ -615,6 +672,17 @@ public class View implements Observer {
         };
         return listener;
     }
+    /**
+     * This method creates a listener that is responsible for changing the server-client role setting to the given param,
+     * when the object it is assigned gets clicked. It also changes the font of the appropriate label, so it more
+     * visible, which is the active setting as well as it toggles the visibility for the IP address input field.
+     * @param role The role to set
+     * @param roleLabels The SERVER_CLIENT_ROLE to JLabel map used for setting the proper font of the labels.
+     * @param ipLabel
+     * @param localIpLabel
+     * @param ipInputField
+     * @return MouseListener The MouseListener object.
+     */
     private MouseListener setServerClientRoleListener(SERVER_CLIENT_ROLE role,Map<SERVER_CLIENT_ROLE, JLabel> roleLabels,JLabel ipLabel,JLabel localIpLabel,JFormattedTextField ipInputField){
         MouseListener listener = new MouseAdapter() {
             Font font;
@@ -656,6 +724,10 @@ public class View implements Observer {
         };
         return listener;
     }
+    /**
+     * This method creates a listener that is responsible for starting the game once the object it is assigned to is clicked upon.
+     * @return MouseListener The MouseListener object.
+     */
     private MouseListener startGameOnClickListener(){
         MouseListener listener = new MouseAdapter() {
             @Override
@@ -665,6 +737,10 @@ public class View implements Observer {
         };
         return listener;
     }
+    /**
+     * This method creates a listener that is responsible for stopping the game once the object it is assigned to is clicked upon.
+     * @return MouseListener The MouseListener object.
+     */
     private MouseListener stopGameOnClickListener(){
         MouseListener listener = new MouseAdapter() {
             @Override
@@ -675,6 +751,10 @@ public class View implements Observer {
         };
         return listener;
     }
+    /**
+     * This method creates a listener that is responsible for hiding the cursor if its above the game field.
+     * * @return MouseListener The MouseListener object.
+     */
     private MouseListener hoverOverArenaListener(){
         MouseListener listener = new MouseAdapter() {
             @Override
@@ -696,6 +776,9 @@ public class View implements Observer {
         return listener;
     }
 
+    /**
+     * This method refreshes the toplist page once it is invoked.
+     */
     public void refreshToplist(){
         toplistHandle.removeAll();
         GridBagConstraints gbc = new GridBagConstraints();
@@ -767,16 +850,5 @@ public class View implements Observer {
             gbc.gridy++;
         }
     }
-    public static void main(String[] args) {
-
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                View view = new View();
-
-            }
-        });
-    }
-
 }
 
