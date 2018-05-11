@@ -10,43 +10,48 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
+import java.sql.Time;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.TimeUnit;
 
 
-public class Client implements Runnable {
-   // private Container container;
+public class Client {
     private String ip;
     private Socket socket = null;
-    private ObjectInputStream inputStream = null;
-    private ObjectOutputStream outputStream = null;
+    private ObjectInputStream inStream = null;
+    private ObjectOutputStream outStream = null;
     private boolean isConnected = false;
     private Arena arena_tx;
     private Arena arena_rx;
+    Thread rx_thread;
+    private volatile boolean rx_ON = false;
 
 
     public Client() {
-//        to = new testobject(3,"abc");
+
     }
 
 
     public void ConnectToServer(String ipaddress) {
 
-        while (!isConnected) {
-            try {
-                System.out.println("Try to connect to:" + ip);
-                socket = new Socket(ipaddress, 7777);
-                System.out.println("Connected!");
-                isConnected = true;
-                inputStream = new ObjectInputStream(socket.getInputStream());
-                outputStream = new ObjectOutputStream(socket.getOutputStream());
+        while (!isConnected) try {
+            System.out.println("Try to connect to:" + ip);
+            socket = new Socket(ipaddress, 7777);
+            System.out.println("Connected!");
+            isConnected = true;
 
-            } catch (SocketException se) {
-                se.printStackTrace();
-                System.exit(0);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            outStream = new ObjectOutputStream(socket.getOutputStream());
+            outStream.flush();
+
+            inStream = new ObjectInputStream(socket.getInputStream());
+
+
+        } catch (SocketException se) {
+            se.printStackTrace();
+            System.exit(0);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -54,7 +59,7 @@ public class Client implements Runnable {
 
         try {
             System.out.println("Try to close socket, HOST:" + socket.getInetAddress());
-            outputStream.close();
+            outStream.close();
             socket.close();
             System.out.println("Success!");
 
@@ -67,75 +72,72 @@ public class Client implements Runnable {
 
     public void SendDatatoServer(Arena arena) {
 
-      /*  container.setX(player.getX());
-        container.setMissed(player.getMissed());
-        container.setAlcoholLevel(player.getAlcoholLevel());
-        container.setFallObjectList(list);
 
-        System.out.println("Player and FallObjectList to be written = " + container);
+        System.out.println("Arena to be written = " + arena);
 
         try {
-            outputStream.writeObject(container);
+            outStream.writeObject(arena);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        */
 
 
     }
 
-   /* public void SendTest(){
 
-        System.out.println("Player and FallObjectList to be written = " + to);
+    public void receive() {
 
         try {
-            outputStream.writeObject(to);
+            arena_rx = (Arena) inStream.readObject();
+            System.out.println("Object received");
+            System.out.println(arena_rx);
+            System.out.println(arena_rx.getPlayer().getAlcoholLevel());
+
         } catch (IOException e) {
             e.printStackTrace();
-        }
-
-
-    }*/
-
-
-    @Override
-    public void run() {
-        try {
-
-            while (true) {
-
-               /* container = (Container) inStream.readObject();
-                System.out.println("Object received = " + container);
-                System.out.println(container.getX());
-                System.out.println(container.getAlcoholLevel());
-                */
-
-                testobject to = (testobject) inputStream.readObject();
-                System.out.println("Object rec:" + to);
-                System.out.println("Object" + to.getValue());
-
-            }
-
-        } catch (SocketException se) {
-            System.exit(0);
-        } catch (IOException e) {
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException cn) {
-            cn.printStackTrace();
         }
+    }
+
+    public void receive_loop() {
+
+        while (rx_ON == true) {
+            receive();
+        }
+
+    }
+
+    public void start_receive(){
+
+        rx_ON = true;
+    }
+    public void stop_receive() {
+
+        rx_ON = false;
+
     }
 
     public static void main(String[] args) throws InterruptedException {
-        Client client;
 
-        client = new Client();
+        Client client = new Client();
+        client.ConnectToServer("127.0.0.1");
 
-        client.ConnectToServer("localhost");
-        Thread ct = new Thread(client);
 
-        while(true){
-            TimeUnit.SECONDS.sleep(3);
+        client.start_receive();
+        new Thread(client::receive_loop).start();
+
+
+        Arena arena = new Arena();
+        arena.getPlayer().setX(3);
+        arena.getPlayer().setAlcoholLevel(5);
+
+        while (true) {
+            TimeUnit.SECONDS.sleep(1);
+            client.SendDatatoServer(arena);
         }
+
+
 
     }
 }

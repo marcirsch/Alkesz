@@ -9,19 +9,21 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-public class Server implements Runnable {
+public class Server {
     private ServerSocket serverSocket = null;
     private Socket socket = null;
     private ObjectOutputStream outStream = null;
     private ObjectInputStream inStream = null;
-   private Arena arena_tx;
-   private Arena arena_rx;
-    // private Container container;
-  //  private testobject to;
+    private Arena arena_tx;
+    private Arena arena_rx;
+    private volatile boolean rx_ON = false;
+    Thread rx_thread;
+
 
     public Server() {
-//    to = new testobject(2,"xyz");
+
     }
 
     public void StartServer() {
@@ -32,73 +34,78 @@ public class Server implements Runnable {
             serverSocket = new ServerSocket(7777);
             socket = serverSocket.accept();
             System.out.println("Connected");
+
             inStream = new ObjectInputStream(socket.getInputStream());
             outStream = new ObjectOutputStream(socket.getOutputStream());
-
+            outStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
- /*   public void SendTest(){
-
-        System.out.println("Player and FallObjectList to be written = " + to);
-
-        try {
-            outStream.writeObject(to);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-    }
-*/
 
     public void SendDatatoClient(Arena arena) {
 
-        /*container.setX(player.getX());
-        container.setMissed(player.getMissed());
-        container.setAlcoholLevel(player.getAlcoholLevel());
-        container.setFallObjectList(list);
-
-        System.out.println("Player and FallObjectList to be written = " + container);
+        System.out.println("Arena to be written = " + arena);
 
         try {
-            outputStream.writeObject(container);
+            outStream.writeObject(arena);
         } catch (IOException e) {
             e.printStackTrace();
         }
-    */
-
     }
 
-    @Override
-    public void run() {
-        try {
+    public void receive() {
 
-            while (true) {
+         try {
+            arena_rx = (Arena) inStream.readObject();
+            System.out.println("Object received");
+            System.out.println(arena_rx);
+            System.out.println(arena_rx.getPlayer().getAlcoholLevel());
 
-               /* container = (Container) inStream.readObject();
-                System.out.println("Object received = " + container);
-                System.out.println(container.getX());
-                System.out.println(container.getAlcoholLevel());
-                */
-
-                testobject to = (testobject) inStream.readObject();
-                System.out.println("Object rec:" + to);
-                System.out.println("Object" + to.getValue());
-
-            }
-
-        } catch (SocketException se) {
-            System.exit(0);
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException cn) {
-            cn.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void receive_loop() {
+
+        while (rx_ON == true) {
+            receive();
         }
 
     }
 
+    public void start_receive(){
+
+        rx_ON = true;
+    }
+    public void stop_receive() {
+
+        rx_ON = false;
+
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+
+        Server server = new Server();
+        server.StartServer();
+        System.out.println("OK");
+        server.start_receive();
+        new Thread(server::receive_loop).start();
+
+        Arena arena = new Arena();
+        arena.getPlayer().setX(3);
+        arena.getPlayer().setAlcoholLevel(7);
+
+        while (true) {
+            TimeUnit.SECONDS.sleep(1);
+            server.SendDatatoClient(arena);
+        }
+
+
+    }
 
 }
