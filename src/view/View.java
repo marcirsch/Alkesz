@@ -416,18 +416,18 @@ public class View implements Observer {
 
 // TODO gombnyomásra indulás
 
-//                        controller.getClient().ConnectToServer(ipInputField.getText());
-//                        Thread clientthread = new Thread(controller.getClient());
-//                        clientthread.start();
+                        controller.getClient().ConnectToServer("127.0.0.1");
+                        controller.getClient().start_receive();
+                        new Thread(controller.getClient()::receive_loop).start();
 
 
                     }
 
                     if(controller.settings.getRole() == SERVER_CLIENT_ROLE.SERVER){
 
-//                        controller.getServer().StartServer();
-//                        Thread serverthread = new Thread(controller.getServer());
-//                        serverthread.start();
+                        controller.getServer().StartServer();
+                        controller.getServer().start_receive();
+                        new Thread(controller.getServer()::receive_loop).start();
 
                     }
 

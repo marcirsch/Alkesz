@@ -1,6 +1,5 @@
 package network;
 
-
 import model.Arena;
 import model.FallObject;
 import model.Player;
@@ -15,16 +14,13 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.TimeUnit;
 
-
 public class Client {
     private String ip;
     private Socket socket = null;
     private ObjectInputStream inStream = null;
     private ObjectOutputStream outStream = null;
     private boolean isConnected = false;
-    private Arena arena_tx;
-    private Arena arena_rx;
-    Thread rx_thread;
+    private volatile Arena arena_rx;
     private volatile boolean rx_ON = false;
 
 
@@ -76,7 +72,10 @@ public class Client {
         System.out.println("Arena to be written = " + arena);
 
         try {
+
+            outStream.reset();
             outStream.writeObject(arena);
+
         } catch (IOException e) {
             e.printStackTrace();
         }

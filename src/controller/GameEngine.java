@@ -85,6 +85,15 @@ public class GameEngine implements MouseMotionListener, Subject {
         arena.getPlayer().setX(PlayerXPosition + tipsyOffsetGenerator.getValue());
         arenaRenderer.repaint();
 
+
+        if(settings.getRole() == Settings.SERVER_CLIENT_ROLE.SERVER){
+            server.SendDatatoClient(arena);
+        }
+
+        else {
+            client.SendDatatoServer(arena);
+        }
+
     }
 
 

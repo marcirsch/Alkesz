@@ -16,10 +16,8 @@ public class Server {
     private Socket socket = null;
     private ObjectOutputStream outStream = null;
     private ObjectInputStream inStream = null;
-    private Arena arena_tx;
-    private Arena arena_rx;
+    private volatile Arena arena_rx;
     private volatile boolean rx_ON = false;
-    Thread rx_thread;
 
 
     public Server() {
@@ -49,7 +47,9 @@ public class Server {
         System.out.println("Arena to be written = " + arena);
 
         try {
+            outStream.reset();
             outStream.writeObject(arena);
+
         } catch (IOException e) {
             e.printStackTrace();
         }

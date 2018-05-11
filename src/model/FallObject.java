@@ -2,7 +2,7 @@ package model;
 
 import java.io.Serializable;
 
-public class FallObject {
+public class FallObject implements Serializable{
     private int x;
     private int y;
 
