@@ -1,8 +1,10 @@
 package network;
 
+import controller.GameEngine;
 import model.Arena;
 import model.FallObject;
 import model.Player;
+import model.Settings;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -18,10 +20,10 @@ public class Server {
     private ObjectInputStream inStream = null;
     private volatile Arena arena_rx;
     private volatile boolean rx_ON = false;
+    private GameEngine controller;
 
-
-    public Server() {
-
+    public Server(GameEngine controller) {
+        this.controller = controller;
     }
 
     public void StartServer() {
@@ -33,9 +35,11 @@ public class Server {
             socket = serverSocket.accept();
             System.out.println("Connected");
 
+
             inStream = new ObjectInputStream(socket.getInputStream());
             outStream = new ObjectOutputStream(socket.getOutputStream());
             outStream.flush();
+            this.controller.startGame(Settings.GAME_MODE.MULTIPLAYER);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -88,24 +92,24 @@ public class Server {
 
     }
 
-    public static void main(String[] args) throws InterruptedException {
-
-        Server server = new Server();
-        server.StartServer();
-        System.out.println("OK");
-        server.start_receive();
-        new Thread(server::receive_loop).start();
-
-        Arena arena = new Arena();
-        arena.getPlayer().setX(3);
-        arena.getPlayer().setAlcoholLevel(7);
-
-        while (true) {
-            TimeUnit.SECONDS.sleep(1);
-            server.SendDatatoClient(arena);
-        }
-
-
-    }
+//    public static void main(String[] args) throws InterruptedException {
+//
+//        Server server = new Server();
+//        server.StartServer();
+//        System.out.println("OK");
+//        server.start_receive();
+//        new Thread(server::receive_loop).start();
+//
+//        Arena arena = new Arena();
+//        arena.getPlayer().setX(3);
+//        arena.getPlayer().setAlcoholLevel(7);
+//
+//        while (true) {
+//            TimeUnit.SECONDS.sleep(1);
+//            server.SendDatatoClient(arena);
+//        }
+//
+//
+//    }
 
 }

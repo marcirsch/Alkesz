@@ -3,11 +3,8 @@ package controller;
 import model.*;
 import network.Client;
 import network.Server;
-import view.ArenaRenderer;
-import view.Observer;
-import view.Subject;
+import view.*;
 import model.TopList;
-import view.View;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,7 +16,7 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.Random;
 
-public class GameEngine implements MouseMotionListener, Subject {
+public class GameEngine implements MouseMotionListener {
 
     private Arena arena;
     private ArenaRenderer arenaRenderer;
@@ -28,6 +25,7 @@ public class GameEngine implements MouseMotionListener, Subject {
     private Server server;
     public Settings settings;
     public TopList topList;
+    private View view;
 
 
     private boolean play = false;
@@ -38,11 +36,12 @@ public class GameEngine implements MouseMotionListener, Subject {
     private ArrayList observers = new ArrayList();// used to communicate with view
     private int PlayerXPosition;
 
-    public GameEngine() {
+    public GameEngine(View gui) {
 
-        client = new Client();
-        server = new Server();
 
+        client = new Client(this);
+        server = new Server(this);
+        this.view = gui;
         arena = new Arena();
         arena.getPlayer().setX(Arena.WIDTH / 2);
         arena.getPlayer().setY(Arena.HEIGHT - 30);
@@ -54,6 +53,7 @@ public class GameEngine implements MouseMotionListener, Subject {
 
         timer = new Timer(getDifficultyDelay(), e -> Update()); // call update every delay milliseconds
     }
+
 
 
     private void Update() {
@@ -76,8 +76,9 @@ public class GameEngine implements MouseMotionListener, Subject {
             } else {
                 JOptionPane.showMessageDialog(null, "Congratulations! \nYou had: " + getPoints() + " points", "Info", JOptionPane.INFORMATION_MESSAGE);
             }
-            ((View) observers.get(0)).refreshToplist();
-            notifyObservers();
+            this.view.refreshToplist();
+            this.ResetGame();
+
         }
 
 
@@ -85,13 +86,14 @@ public class GameEngine implements MouseMotionListener, Subject {
         arena.getPlayer().setX(PlayerXPosition + tipsyOffsetGenerator.getValue());
         arenaRenderer.repaint();
 
+        if (settings.getGameMode() == Settings.GAME_MODE.MULTIPLAYER && play) {
+            if(settings.getRole() == Settings.SERVER_CLIENT_ROLE.SERVER){
+                server.SendDatatoClient(arena);
+            }
 
-        if(settings.getRole() == Settings.SERVER_CLIENT_ROLE.SERVER){
-            server.SendDatatoClient(arena);
-        }
-
-        else {
-            client.SendDatatoServer(arena);
+            else {
+                client.SendDatatoServer(arena);
+            }
         }
 
     }
@@ -248,6 +250,7 @@ public class GameEngine implements MouseMotionListener, Subject {
         arena.getPlayer().setAlcoholLevel(0);
         arenaRenderer.setBlinkEnabled(false);
         arena.getFallObjectList().clear();
+        this.setPlay(true);
     }
 
     public int getPoints() {
@@ -265,6 +268,18 @@ public class GameEngine implements MouseMotionListener, Subject {
         }
     }
 
+    public void startMultiPlayer() {
+        this.setPlay(true);
+
+    }
+
+    public void startGame(Settings.GAME_MODE gameMode) {
+        this.settings.setGameMode(gameMode);
+        this.setPlay(true);
+        if (gameMode == Settings.GAME_MODE.MULTIPLAYER){
+            this.view.showPage(View.PAGENAME.SINGLEPLAYER);
+        }
+    }
 
     @Override
     public void mouseDragged(MouseEvent mouseEvent) {
@@ -291,26 +306,16 @@ public class GameEngine implements MouseMotionListener, Subject {
         return arena;
     }
 
-    @Override
-    public void addObserver(Observer o) {
-        try {
-            observers.add(o);
-        } catch (Exception e) {
-            System.out.println("Failed to add to Observer list");
-        }
+    public void startClient() {
+        this.client.ConnectToServer("127.0.0.1");
+        this.client.start_receive();
+        new Thread(this.client::receive_loop).start();
     }
 
-    @Override
-    public void removeObserver(Observer o) {
-        observers.remove(o);
+    public void startServer() {
+        this.server.StartServer();
+        this.server.start_receive();
+        new Thread(this.server::receive_loop).start();
     }
 
-    private void notifyObservers() {
-        // loop through and notify each observer
-        Iterator i = observers.iterator();
-        while (i.hasNext()) {
-            Observer o = (Observer) i.next();
-            o.update(this);
-        }
-    }
 }

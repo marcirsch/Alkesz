@@ -10,8 +10,18 @@ public class Settings {
     private String localIPAddress;
     private String remoteIPAddress;
 
-    public enum GAME_DIFFICULTY {EASY, MEDIUM, HARD}
+    public GAME_MODE getGameMode() {
+        return gameMode;
+    }
 
+    public void setGameMode(GAME_MODE gameMode) {
+        this.gameMode = gameMode;
+    }
+
+    private GAME_MODE gameMode = GAME_MODE.SINGLEPLAYER;
+
+    public enum GAME_DIFFICULTY {EASY, MEDIUM, HARD}
+    public enum GAME_MODE {SINGLEPLAYER, MULTIPLAYER}
     public enum SERVER_CLIENT_ROLE {SERVER, CLIENT}
 
     public static final int MISSED_LOSE_THRESHOLD = 5;

@@ -1,8 +1,10 @@
 package network;
 
+import controller.GameEngine;
 import model.Arena;
 import model.FallObject;
 import model.Player;
+import model.Settings;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -15,24 +17,23 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.TimeUnit;
 
 public class Client {
-    private String ip;
     private Socket socket = null;
     private ObjectInputStream inStream = null;
     private ObjectOutputStream outStream = null;
     private boolean isConnected = false;
     private volatile Arena arena_rx;
     private volatile boolean rx_ON = false;
+    private GameEngine controller;
 
-
-    public Client() {
-
+    public Client(GameEngine controller) {
+        this.controller = controller;
     }
 
 
     public void ConnectToServer(String ipaddress) {
 
         while (!isConnected) try {
-            System.out.println("Try to connect to:" + ip);
+            System.out.println("Try to connect to:" + ipaddress);
             socket = new Socket(ipaddress, 7777);
             System.out.println("Connected!");
             isConnected = true;
@@ -41,7 +42,7 @@ public class Client {
             outStream.flush();
 
             inStream = new ObjectInputStream(socket.getInputStream());
-
+            this.controller.startGame(Settings.GAME_MODE.MULTIPLAYER);
 
         } catch (SocketException se) {
             se.printStackTrace();
@@ -117,26 +118,26 @@ public class Client {
 
     }
 
-    public static void main(String[] args) throws InterruptedException {
-
-        Client client = new Client();
-        client.ConnectToServer("127.0.0.1");
-
-
-        client.start_receive();
-        new Thread(client::receive_loop).start();
-
-
-        Arena arena = new Arena();
-        arena.getPlayer().setX(3);
-        arena.getPlayer().setAlcoholLevel(5);
-
-        while (true) {
-            TimeUnit.SECONDS.sleep(1);
-            client.SendDatatoServer(arena);
-        }
-
-
-
-    }
+//    public static void main(String[] args) throws InterruptedException {
+//
+//        Client client = new Client();
+//        client.ConnectToServer("127.0.0.1");
+//
+//
+//        client.start_receive();
+//        new Thread(client::receive_loop).start();
+//
+//
+//        Arena arena = new Arena();
+//        arena.getPlayer().setX(3);
+//        arena.getPlayer().setAlcoholLevel(5);
+//
+//        while (true) {
+//            TimeUnit.SECONDS.sleep(1);
+//            client.SendDatatoServer(arena);
+//        }
+//
+//
+//
+//    }
 }

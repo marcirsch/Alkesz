@@ -3,6 +3,7 @@ package view;
 
 import controller.GameEngine;
 import model.Player;
+import model.Settings;
 import model.Settings.GAME_DIFFICULTY;
 import model.Settings.SERVER_CLIENT_ROLE;
 import network.Client;
@@ -21,15 +22,6 @@ import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Enumeration used for giving the pages a unique identifier.
- */
-enum PAGENAME{  MENU,
-                TOPSCORES,
-                TOPSCORESINPUT,
-                SINGLEPLAYER,
-                MULTIPLAYER ,
-                MULTIPLAYERSETTINGS}
 
 /**
  * <h1>Graphical User Interface</h1>
@@ -38,7 +30,7 @@ enum PAGENAME{  MENU,
  * @version 1.0
  * @since   2018-04-25
  */
-public class View implements Observer {
+public class View {
     private JFrame window;
     private GameEngine controller;
     private JPanel toplistHandle;
@@ -46,10 +38,22 @@ public class View implements Observer {
     private PAGENAME currentPage;
 
 //  Constants
-    public static final int WINDOW_WIDTH = 1000;
-    public static final int WINDOW_HEIGHT = 900;
+    public static final int WINDOW_WIDTH = 600;
+    public static final int WINDOW_HEIGHT = 500;
     public static final int WINDOW_X_POS = 10;
     public static final int WINDOW_Y_POS = 10;
+
+    /**
+     * Enumeration used for giving the pages a unique identifier.
+     */
+    public enum PAGENAME{
+        MENU,
+        TOPSCORES,
+        TOPSCORESINPUT,
+        SINGLEPLAYER,
+        MULTIPLAYER ,
+        MULTIPLAYERSETTINGS}
+
     /**
      * The constructor of the GUI. It creates all the pages, sets the layout as well as all the listeners for the
      * buttons. At last it opens the main page.
@@ -65,19 +69,10 @@ public class View implements Observer {
         window.setVisible(true);
         window.setLayout(new GridBagLayout());
 
-        this.controller = new GameEngine();
-        this.controller.addObserver(this);
+        this.controller = new GameEngine(this);
         currentPage=PAGENAME.MENU;
         pages = createPages();
         showPage(PAGENAME.MENU);
-    }
-
-
-    @Override
-    public void update(Subject o) {
-
-        controller.ResetGame();
-        controller.setPlay(true);
     }
 
     /**
@@ -111,7 +106,7 @@ public class View implements Observer {
      * @param pageToShow The PAGENAME of the page to show.
      * @see PAGENAME
      */
-    private void showPage(PAGENAME pageToShow){
+    public void showPage(PAGENAME pageToShow){
         pages.get(pageToShow).setVisible(true);
         if (pageToShow!=currentPage){
             pages.get(currentPage).setVisible(false);
@@ -415,20 +410,12 @@ public class View implements Observer {
                     if(controller.settings.getRole() == SERVER_CLIENT_ROLE.CLIENT){
 
 // TODO gombnyomásra indulás
-
-                        controller.getClient().ConnectToServer("127.0.0.1");
-                        controller.getClient().start_receive();
-                        new Thread(controller.getClient()::receive_loop).start();
-
-
+// TODO IP-t kicserélni
+                        controller.startClient();
                     }
 
                     if(controller.settings.getRole() == SERVER_CLIENT_ROLE.SERVER){
-
-                        controller.getServer().StartServer();
-                        controller.getServer().start_receive();
-                        new Thread(controller.getServer()::receive_loop).start();
-
+                        controller.startServer();
                     }
 
                 }
@@ -445,6 +432,7 @@ public class View implements Observer {
      * This method creates the singleplayer page.
      * @return JPanel The JPanel object of the singleplayer page.
      */
+//    TODO RENAME
     private JPanel createSingleModePage(){
         JPanel page = new JPanel();
         GridBagConstraints gbc = new GridBagConstraints();
@@ -453,7 +441,6 @@ public class View implements Observer {
 
 //        Panels
         JPanel headerPanel = new JPanel();
-//        TODO Implement the other panels
 
         gbc.fill=GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
@@ -490,6 +477,8 @@ public class View implements Observer {
         headerPanel.add(new JLabel("",JLabel.CENTER),gbc);
         headerPanel.setBackground(Color.RED);
 
+//        TODO Leválasztani saját játéktrre és ellenfl játéktére, az ellenfél játékterének láthatóságán a visibility állításával operálunk majd.
+//        TODO A fall object tetején lévő elemeket mindig átírjuk attól függően, hogy mit kapunk. A tövvit csak megjelenítjük.
         gbc.fill=GridBagConstraints.BOTH;
         gbc.gridx=0;
         gbc.gridy++;
@@ -507,6 +496,11 @@ public class View implements Observer {
         this.controller.setArenaRenderer(arenaPanel);
         page.add(arenaPanel,gbc);
 
+        gbc.gridx=1;
+        gbc.weighty=23;
+        ArenaRenderer opponentArenaPanel =  new ArenaRenderer(this.controller.getArena());
+////        this.controller.setArenaRenderer(arenaPanel);
+        page.add(opponentArenaPanel,gbc);
 
         JLabel alcoholLevelLabel = new JLabel("Blood alcohol:",JLabel.CENTER);
         alcoholLevelLabel.setFont(new Font("Comic Sans", Font.ITALIC+Font.BOLD, 16));
@@ -523,6 +517,11 @@ public class View implements Observer {
         JLabel score = new JLabel("0",JLabel.CENTER);
         score.setFont(new Font("Comic Sans", Font.ITALIC+Font.BOLD, 16));
         arenaPanel.setScoreLabel(score);
+
+        opponentArenaPanel.setScoreLabel(score);
+        opponentArenaPanel.setMissedLabel(missed);
+        opponentArenaPanel.setAlcoholLevelLabel(alcoholLevel);
+        opponentArenaPanel.setVisible(false);
 
         gbc.fill=GridBagConstraints.BOTH;
         gbc.gridx=0;
@@ -733,9 +732,10 @@ public class View implements Observer {
         MouseListener listener = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                controller.setPlay(true);
+                controller.startGame(Settings.GAME_MODE.SINGLEPLAYER);
             }
         };
+
         return listener;
     }
     /**
