@@ -1,16 +1,16 @@
 package model;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 public class TopList {
 
@@ -21,6 +21,9 @@ public class TopList {
 
     private static final String defaultPathToJSON = "./toplist.json";
 
+    /**
+     * Toplist constructor, reads toplist from file or initializes with empty list and creates file.
+     */
     public TopList() {
         entries = new ArrayList<TopListEntry>();
 
@@ -35,6 +38,11 @@ public class TopList {
         }
     }
 
+    /**
+     * Adds new item to current toplist
+     * @param score
+     * @param name
+     */
     public void add(int score, String name) {
         entries.add(new TopListEntry(score, name));
         Collections.sort(entries);
@@ -46,6 +54,12 @@ public class TopList {
         exportToplistToJSON(defaultPathToJSON);
     }
 
+    /**
+     * Opens file to store toplist
+     * @param path Path to file
+     * @throws IOException  throws exception if cannot open file
+     * @throws ParseException
+     */
     public void importToplistFromJSON(String path) throws IOException, ParseException {
         JSONParser parser = new JSONParser();
         Object obj = parser.parse(new FileReader(path));
@@ -57,6 +71,10 @@ public class TopList {
         }
     }
 
+    /**
+     * Saves toplist to file in path.
+     * @param path
+     */
     public void exportToplistToJSON(String path) {
         JSONObject obj = new JSONObject();
         JSONArray jsonlist = new JSONArray();
@@ -75,18 +93,35 @@ public class TopList {
         }
     }
 
+    /**
+     * Getter method for minimum score
+     * @return
+     */
     public int getMinScore() {
         return minScore;
     }
 
+    /**
+     * Getter method for items in list.
+     * @return
+     */
     public int getItemsInList() {
         return itemsInList;
     }
 
+    /**
+     * Getter method for an entry.
+     * @param index
+     * @return entry
+     */
     public TopListEntry getEntry(int index) {
         return entries.get(index);
     }
 
+    /**
+     * Setter method for entries list
+     * @return Entries list
+     */
     public ArrayList<TopListEntry> getEntries() {
         return entries;
     }

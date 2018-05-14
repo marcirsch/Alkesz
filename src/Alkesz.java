@@ -1,8 +1,10 @@
-import controller.GameEngine;
 import view.View;
 
 import javax.swing.*;
-import java.awt.*;
+
+/**
+ * Alkesz main class
+ */
 
 public class Alkesz {
 

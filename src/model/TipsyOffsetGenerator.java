@@ -13,17 +13,28 @@ public class TipsyOffsetGenerator {
 
     private int direction = 1;
     private int value = 0;
-    private int counter = 0;
 
+    /**
+     * Constructor for tipsy offset.
+     * This class is responsible for generating tipsy movement of player after several drinks.
+     */
     public TipsyOffsetGenerator() {
         timer = new Timer(delay, e -> update());
         timer.start();
     }
 
+    /**
+     * Getter function for alcohol level
+     * @return
+     */
     public int getAlcoholLevel() {
         return alcoholLevel;
     }
 
+    /**
+     * Setter method for alcohol level
+     * @param alcoholLevel
+     */
     public void setAlcoholLevel(int alcoholLevel) {
         this.alcoholLevel = alcoholLevel;
         if (alcoholLevel == 0) {
@@ -31,10 +42,17 @@ public class TipsyOffsetGenerator {
         }
     }
 
+    /**
+     * Getter method for offset value
+     * @return
+     */
     public int getValue() {
         return value;
     }
 
+    /**
+     * Update method called by timer
+     */
     private void update() {
         int threshold = (alcoholLevel / 5) * 10;
         if (value < -1 * threshold || value > threshold) {
@@ -46,7 +64,10 @@ public class TipsyOffsetGenerator {
 
     }
 
-
+    /**
+     * Test main method
+     * @param args
+     */
     public static void main(String[] args) {
         TipsyOffsetGenerator toge = new TipsyOffsetGenerator();
         toge.setAlcoholLevel(5);
