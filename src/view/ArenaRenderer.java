@@ -46,6 +46,7 @@ public class ArenaRenderer extends JPanel implements Runnable {
     private Image imagePlayer;
 
     private Timer timer; // timer is used for screen update
+
     /**
      * The constructor of the class. It reads in all the images in advance and buffers them.
      */
@@ -73,9 +74,11 @@ public class ArenaRenderer extends JPanel implements Runnable {
         timer = new Timer(5, e -> repaint());
         timer.start();
     }
+
     /**
      * This methods renders the arena, based on the actual state of the game. Also if a given treshold for alcohol
      * level is passed, it applies blur to the field and the blinking effect.
+     *
      * @param g The base background for the field.
      */
     private void RenderArena(Graphics2D g) {
@@ -128,10 +131,12 @@ public class ArenaRenderer extends JPanel implements Runnable {
 
 
     }
+
     /**
      * This methods renders a fallobject on the screen depending on the type of it.
-     * @param g The image, it draws the object onto.
-     * @param  fallObject The fallobject to draw
+     *
+     * @param g          The image, it draws the object onto.
+     * @param fallObject The fallobject to draw
      */
     private void RenderFallObject(FallObject fallObject, Graphics2D g) {
         switch (fallObject.getType()) {
@@ -161,17 +166,21 @@ public class ArenaRenderer extends JPanel implements Runnable {
 
 //        g.fillOval(fallObject.getX(), fallObject.getY(), FALLOBJECT_WIDTH, FALLOBJECT_HEIGHT);
     }
+
     /**
      * This methods renders the player on the screen.
-     * @param g The image, it draws the object onto.
-     * @param  player The player to render.
+     *
+     * @param g      The image, it draws the object onto.
+     * @param player The player to render.
      */
     private void RenderPlayer(Player player, Graphics2D g) {
         g.drawImage(imagePlayer, player.getX() - imagePlayer.getWidth(null) / 2 + 30, player.getY() - imagePlayer.getHeight(null) / 2, null);
 //        g.fillRect(player.getX(), player.getY(), PLAYER_WIDTH, PLAYER_HEIGHT);
     }
+
     /**
      * This methods applies blur to the given image.
+     *
      * @param buf The image, it blurs.
      */
     public BufferedImage blur(BufferedImage buf) {
@@ -187,6 +196,7 @@ public class ArenaRenderer extends JPanel implements Runnable {
 
     /**
      * This methods paints the rendered graphics.
+     *
      * @param g The graphics to show.
      */
     public void paint(Graphics g) {
@@ -205,6 +215,7 @@ public class ArenaRenderer extends JPanel implements Runnable {
 
         updateLabels();
     }
+
     /**
      * This methods updates the score labels above the game field once it is invoked.
      */
@@ -218,6 +229,7 @@ public class ArenaRenderer extends JPanel implements Runnable {
 
     /**
      * This methods sets a handle for the alcoholLevelLabel.
+     *
      * @param alcoholLevelLabel The JLabel it stores a reference of.
      */
     public void setAlcoholLevelLabel(JLabel alcoholLevelLabel) {
@@ -226,20 +238,25 @@ public class ArenaRenderer extends JPanel implements Runnable {
 
     /**
      * This methods sets a handle for the missedLabel.
+     *
      * @param missedLabel The JLabel it stores a reference of.
      */
     public void setMissedLabel(JLabel missedLabel) {
         this.missedLabel = missedLabel;
     }
+
     /**
      * This methods sets a handle for the scoreLabel.
+     *
      * @param scoreLabel The JLabel it stores a reference of.
      */
     public void setScoreLabel(JLabel scoreLabel) {
         this.scoreLabel = scoreLabel;
     }
+
     /**
      * Setter for the blink enabled property.
+     *
      * @param blinkEnabled
      */
     public void setBlinkEnabled(boolean blinkEnabled) {

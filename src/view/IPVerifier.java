@@ -7,6 +7,7 @@ import java.util.StringTokenizer;
 /**
  * This class implements a input verifier which is used for verifing the IP address given on the multiplayer settings
  * page if the network role is client.
+ *
  * @see InputVerifier
  */
 public class IPVerifier extends InputVerifier {

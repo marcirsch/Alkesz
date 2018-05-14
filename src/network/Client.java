@@ -25,10 +25,23 @@ public class Client {
     private volatile boolean rx_ON = false;
     private GameEngine controller;
 
+    /**
+     * Constructor of Client
+     *
+     * @param controller Reference to controller
+     */
+
     public Client(GameEngine controller) {
         this.controller = controller;
     }
 
+    /**
+     * In multi player client mode this method connects to the Server's opened socket,
+     * creates Output and Input object stream to exchange objects.
+     *
+     * @param ipaddress IP address of the Server
+     * @return Successful connection: 1, Error occurred: 0
+     */
 
     public boolean ConnectToServer(String ipaddress) {
 
@@ -59,6 +72,10 @@ public class Client {
         return false;
     }
 
+    /**
+     * In multi player this method disconnects the server:
+     * closes the object streams, after closes the socket.
+     */
     public void Disconnect() {
 
         try {
@@ -75,6 +92,12 @@ public class Client {
 
     }
 
+    /**
+     * In multi player client mode this method sends the serializable objects with information about player
+     * and game state to the server
+     *
+     * @param arena The object with information about player and game state
+     */
     public void SendDatatoServer(Arena arena) {
 
 
@@ -95,6 +118,10 @@ public class Client {
 
     }
 
+    /**
+     * This method is the primary receive method to receive data from the server,
+     * checks the Input object stream, reads out the data (Arena object)
+     */
 
     public void receive() {
 
@@ -116,6 +143,11 @@ public class Client {
         }
     }
 
+    /**
+     * This method runs of his own thread, if the receive is enabled calls
+     * the primary receive method in an infinite loop, if the receive is disabled calls the disconnect method
+     */
+
     public void receive_loop() {
 
         while (rx_ON == true) {
@@ -124,10 +156,19 @@ public class Client {
         this.Disconnect();
     }
 
-    public void start_receive(){
+    /**
+     * This method enables the data receiving over the network
+     */
+
+    public void start_receive() {
 
         rx_ON = true;
     }
+
+    /**
+     * This method disables the data receiving over the network
+     */
+
     public void stop_receive() {
 
         rx_ON = false;

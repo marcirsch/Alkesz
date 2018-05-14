@@ -40,6 +40,7 @@ public class TopList {
 
     /**
      * Adds new item to current toplist
+     *
      * @param score
      * @param name
      */
@@ -56,8 +57,9 @@ public class TopList {
 
     /**
      * Opens file to store toplist
+     *
      * @param path Path to file
-     * @throws IOException  throws exception if cannot open file
+     * @throws IOException    throws exception if cannot open file
      * @throws ParseException
      */
     public void importToplistFromJSON(String path) throws IOException, ParseException {
@@ -73,6 +75,7 @@ public class TopList {
 
     /**
      * Saves toplist to file in path.
+     *
      * @param path
      */
     public void exportToplistToJSON(String path) {
@@ -95,6 +98,7 @@ public class TopList {
 
     /**
      * Getter method for minimum score
+     *
      * @return
      */
     public int getMinScore() {
@@ -103,6 +107,7 @@ public class TopList {
 
     /**
      * Getter method for items in list.
+     *
      * @return
      */
     public int getItemsInList() {
@@ -111,6 +116,7 @@ public class TopList {
 
     /**
      * Getter method for an entry.
+     *
      * @param index
      * @return entry
      */
@@ -120,6 +126,7 @@ public class TopList {
 
     /**
      * Setter method for entries list
+     *
      * @return Entries list
      */
     public ArrayList<TopListEntry> getEntries() {

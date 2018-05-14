@@ -13,7 +13,9 @@ public class Settings {
     private GAME_MODE gameMode = GAME_MODE.SINGLEPLAYER;
 
     public enum GAME_DIFFICULTY {EASY, MEDIUM, HARD}
+
     public enum GAME_MODE {SINGLEPLAYER, MULTIPLAYER}
+
     public enum SERVER_CLIENT_ROLE {SERVER, CLIENT}
 
     public static final int MISSED_LOSE_THRESHOLD = 5;
@@ -43,20 +45,25 @@ public class Settings {
 
     /**
      * Getter method for ip address of local pc
+     *
      * @return ip address
      */
     public String getLocalIPAddress() {
         return localIPAddress;
     }
+
     /**
      * Setter function for ip address of local pc
+     *
      * @param ip
      */
     public void setLocalIPAddress(String ip) {
         this.localIPAddress = ip;
     }
+
     /**
      * Getter method for ip address of remote pc
+     *
      * @return remote ip address
      */
     public String getRemoteIPAddress() {
@@ -65,6 +72,7 @@ public class Settings {
 
     /**
      * Getter function for Role
+     *
      * @return role
      */
     public SERVER_CLIENT_ROLE getRole() {
@@ -74,6 +82,7 @@ public class Settings {
 
     /**
      * Setter method for game difficulty
+     *
      * @param difficulty
      */
     public void setDifficulty(GAME_DIFFICULTY difficulty) {
@@ -82,6 +91,7 @@ public class Settings {
 
     /**
      * Getter method for game difficulty.
+     *
      * @return difficulty
      */
     public GAME_DIFFICULTY getDifficulty() {
@@ -90,6 +100,7 @@ public class Settings {
 
     /**
      * Setter method for ip address of remote pc
+     *
      * @param remoteIPAddress
      */
     public void setRemoteIPAddress(String remoteIPAddress) {
@@ -98,6 +109,7 @@ public class Settings {
 
     /**
      * Setter method for role
+     *
      * @param role
      */
     public void setRole(SERVER_CLIENT_ROLE role) {
@@ -106,6 +118,7 @@ public class Settings {
 
     /**
      * Getter method for game mode
+     *
      * @return
      */
     public GAME_MODE getGameMode() {
@@ -114,6 +127,7 @@ public class Settings {
 
     /**
      * Setter function for game mode
+     *
      * @param gameMode
      */
     public void setGameMode(GAME_MODE gameMode) {

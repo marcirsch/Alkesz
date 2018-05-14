@@ -47,7 +47,8 @@ public class GameEngine implements MouseMotionListener {
 
     /**
      * Constructor of GameEngine prepares Network, GUI, Arena, settings and timer for run.
-     * @param gui   Reference to GUI
+     *
+     * @param gui Reference to GUI
      */
 
     public GameEngine(View gui) {
@@ -111,11 +112,9 @@ public class GameEngine implements MouseMotionListener {
         arenaRenderer.repaint();
 
         if (settings.getGameMode() == Settings.GAME_MODE.MULTIPLAYER && play) {
-            if(settings.getRole() == Settings.SERVER_CLIENT_ROLE.SERVER){
+            if (settings.getRole() == Settings.SERVER_CLIENT_ROLE.SERVER) {
                 server.SendDatatoClient(arena);
-            }
-
-            else {
+            } else {
                 client.SendDatatoServer(arena);
             }
         }
@@ -163,6 +162,7 @@ public class GameEngine implements MouseMotionListener {
 
     /**
      * Returns difficulty set in Settings, in form of a divisor used for new fall object generation.
+     *
      * @return int divisor
      */
     private int getDifficultyDiv() {
@@ -185,6 +185,7 @@ public class GameEngine implements MouseMotionListener {
 
     /**
      * Returns difficulty threshold used for Fall object generation. This threshold sets minimum distance between objects
+     *
      * @return int threshold for given threshold
      */
     private int getDifficultyTh() {
@@ -207,6 +208,7 @@ public class GameEngine implements MouseMotionListener {
 
     /**
      * Returns delay for set difficulty in settings. Used for Timer recalls.
+     *
      * @return int difficulty delay
      */
     private int getDifficultyDelay() {
@@ -229,6 +231,7 @@ public class GameEngine implements MouseMotionListener {
 
     /**
      * Getter method for Client
+     *
      * @return Client client
      */
     public Client getClient() {
@@ -237,6 +240,7 @@ public class GameEngine implements MouseMotionListener {
 
     /**
      * Getter method for Server
+     *
      * @return Server server
      */
     public Server getServer() {
@@ -245,6 +249,7 @@ public class GameEngine implements MouseMotionListener {
 
     /**
      * Determines if player has lost, with set conditions.
+     *
      * @return boolean True if lost, False if still in game
      */
     private boolean isLost() {
@@ -299,8 +304,9 @@ public class GameEngine implements MouseMotionListener {
 
     /**
      * Returns true if collision occurred between player and fallobject
+     *
      * @param fallObject Object to be tested
-     * @return  True if collision occurred. False otherwise.
+     * @return True if collision occurred. False otherwise.
      */
     private boolean isCollision(FallObject fallObject) {
         Rectangle fallObjRect = new Rectangle(fallObject.getX(), fallObject.getY(), ArenaRenderer.FALLOBJECT_WIDTH, ArenaRenderer.FALLOBJECT_HEIGHT);
@@ -318,7 +324,7 @@ public class GameEngine implements MouseMotionListener {
             for (FallObject fo_rx : arena_rx.getFallObjectList()) {
                 foNew = true;
                 for (FallObject fo : arena.getFallObjectList()) {
-                    if (fo_rx.id == fo.id || fo_rx.getY()>20) {
+                    if (fo_rx.id == fo.id || fo_rx.getY() > 20) {
                         foNew = false;
                     }
                 }
@@ -343,6 +349,7 @@ public class GameEngine implements MouseMotionListener {
 
     /**
      * Getter method for points.
+     *
      * @return int Points
      */
     public int getPoints() {
@@ -351,6 +358,7 @@ public class GameEngine implements MouseMotionListener {
 
     /**
      * Getter method for play variable.
+     *
      * @return boolean True if game play, false otherwise.
      */
     public boolean isPlay() {
@@ -359,6 +367,7 @@ public class GameEngine implements MouseMotionListener {
 
     /**
      * Setter method for play variable.
+     *
      * @param play
      */
     public void setPlay(boolean play) {
@@ -378,6 +387,7 @@ public class GameEngine implements MouseMotionListener {
 
     /**
      * Setup for starting game
+     *
      * @param gameMode Multi player or Single player
      */
     public void startGame(Settings.GAME_MODE gameMode) {
@@ -394,9 +404,9 @@ public class GameEngine implements MouseMotionListener {
             oppArena.resetArena();
         }
 
-        if (gameMode == Settings.GAME_MODE.MULTIPLAYER){
+        if (gameMode == Settings.GAME_MODE.MULTIPLAYER) {
             this.view.showPage(View.PAGENAME.GAME);
-            this.getArena().WIDTH = View.WINDOW_WIDTH/2;
+            this.getArena().WIDTH = View.WINDOW_WIDTH / 2;
             this.view.setMultiplayerView(true);
             arena.resetArena();
             oppArena.resetArena();
@@ -411,6 +421,7 @@ public class GameEngine implements MouseMotionListener {
 
     /**
      * Stops gameplay for Single or Multi player mode
+     *
      * @param gameMode game mode
      */
     public void stopGame(Settings.GAME_MODE gameMode) {
@@ -418,11 +429,11 @@ public class GameEngine implements MouseMotionListener {
         oppArena.resetArena();
         this.ResetGame();
         this.setPlay(false);
-        if (gameMode == Settings.GAME_MODE.MULTIPLAYER){
+        if (gameMode == Settings.GAME_MODE.MULTIPLAYER) {
             view.showPage(View.PAGENAME.MULTIPLAYERSETTINGS);
             if (settings.getRole() == Settings.SERVER_CLIENT_ROLE.SERVER) {
                 server.stop_receive();
-            }else{
+            } else {
                 client.stop_receive();
             }
 
@@ -431,6 +442,7 @@ public class GameEngine implements MouseMotionListener {
 
     /**
      * Mouse drag event listener
+     *
      * @param mouseEvent
      */
     @Override
@@ -440,6 +452,7 @@ public class GameEngine implements MouseMotionListener {
 
     /**
      * Mouse moved event listener. Used to update player position
+     *
      * @param mouseEvent
      */
     @Override
@@ -451,6 +464,7 @@ public class GameEngine implements MouseMotionListener {
 
     /**
      * Getter method for arena renderer
+     *
      * @return ArenaRenderer ArenaRenderer of current Arena
      */
     public ArenaRenderer getArenaRenderer() {
@@ -459,6 +473,7 @@ public class GameEngine implements MouseMotionListener {
 
     /**
      * Setter method for ArenaRenderer
+     *
      * @param arenaRenderer arenarenderer
      */
     public void setArenaRenderer(ArenaRenderer arenaRenderer) {
@@ -468,6 +483,7 @@ public class GameEngine implements MouseMotionListener {
 
     /**
      * Getter method for Arena
+     *
      * @return Arena arena
      */
     public Arena getArena() {
@@ -485,7 +501,7 @@ public class GameEngine implements MouseMotionListener {
     }
 
     /**
-     *  This method starts network thread as server.
+     * This method starts network thread as server.
      */
     public void startServer() {
         if (this.server.StartServer()) {
@@ -496,6 +512,7 @@ public class GameEngine implements MouseMotionListener {
 
     /**
      * Getter method for opponent arenarenderer.
+     *
      * @return ArenaRenderer oppArenaRenderer
      */
     public ArenaRenderer getOppArenaRenderer() {
@@ -504,6 +521,7 @@ public class GameEngine implements MouseMotionListener {
 
     /**
      * Setter method for opponent arena renderer
+     *
      * @param oppArenaRenderer oppArenaRenderer
      */
     public void setOppArenaRenderer(ArenaRenderer oppArenaRenderer) {
@@ -512,6 +530,7 @@ public class GameEngine implements MouseMotionListener {
 
     /**
      * Getter method for opponent arena
+     *
      * @return Arena arena
      */
     public Arena getOppArena() {
@@ -520,6 +539,7 @@ public class GameEngine implements MouseMotionListener {
 
     /**
      * Setter method for opponent Arena
+     *
      * @param oppArena oppArena
      */
     public void setOppArena(Arena oppArena) {

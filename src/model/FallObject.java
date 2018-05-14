@@ -12,6 +12,7 @@ public class FallObject implements Serializable {
 
     /**
      * Constructor of Fallobject
+     *
      * @param id Sets id of object
      */
     public FallObject(int id) {
@@ -20,6 +21,7 @@ public class FallObject implements Serializable {
 
     /**
      * Getter method for alcohol level coef
+     *
      * @return alcLevelCoef
      */
     public int getAlcLevelCoef() {
@@ -28,6 +30,7 @@ public class FallObject implements Serializable {
 
     /**
      * Setter method for alcohol level coef
+     *
      * @param alcLevelCoef
      */
     public void setAlcLevelCoef(int alcLevelCoef) {
@@ -36,6 +39,7 @@ public class FallObject implements Serializable {
 
     /**
      * Getter method for type of object.
+     *
      * @return int type
      */
     public int getType() {
@@ -44,6 +48,7 @@ public class FallObject implements Serializable {
 
     /**
      * Setter method for type of object
+     *
      * @param type Type to be set.
      */
     public void setType(int type) {
@@ -52,27 +57,34 @@ public class FallObject implements Serializable {
 
     /**
      * Getter method for X coordinate of object.
+     *
      * @return int X
      */
     public int getX() {
         return x;
     }
+
     /**
      * Setter method for X coordinate of object.
+     *
      * @param x
      */
     public void setX(int x) {
         this.x = x;
     }
+
     /**
      * Getter method for Y coordinate of object.
+     *
      * @return int Y
      */
     public int getY() {
         return y;
     }
+
     /**
      * Setter method for Y coordinate of object.
+     *
      * @param y
      */
     public void setY(int y) {
@@ -81,6 +93,7 @@ public class FallObject implements Serializable {
 
     /**
      * Getter function of object velocity.
+     *
      * @return int velocity
      */
     public int getVelocity() {
@@ -89,6 +102,7 @@ public class FallObject implements Serializable {
 
     /**
      * Setter function for object velocity
+     *
      * @param velocity
      */
     public void setVelocity(int velocity) {

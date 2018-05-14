@@ -22,9 +22,22 @@ public class Server {
     private volatile boolean rx_ON = false;
     private GameEngine controller;
 
+    /**
+     * Constructor of Server
+     *
+     * @param controller Reference to controller
+     */
+
     public Server(GameEngine controller) {
         this.controller = controller;
     }
+
+    /**
+     * In multi player server mode this method starts a new server socket on the 7777 port then waiting for the incoming
+     * request, after the client connects creates Output and Input object stream to exchange objects.
+     *
+     * @return Successful server starting: 1, Error occurred: 0
+     */
 
     public boolean StartServer() {
 
@@ -49,6 +62,12 @@ public class Server {
         }
         return false;
     }
+
+    /**
+     * In multi player this method disconnects the client:
+     * closes the object streams, after closes the socket.
+     */
+
     public void StopServer() {
 
         System.out.println("Stop server");
@@ -62,6 +81,12 @@ public class Server {
         }
     }
 
+    /**
+     * In multi player server mode this method sends the serializable objects with information about player and game state
+     * to the client.
+     *
+     * @param arena The object with information about player and game state
+     */
 
     public void SendDatatoClient(Arena arena) {
 
@@ -76,10 +101,15 @@ public class Server {
         }
     }
 
+    /**
+     * This method is the primary receive method to receive data from the client,
+     * checks the Input object stream, reads out the data (Arena object)
+     */
+
     public void receive() {
 
-         try {
-             Arena arena_rx = (Arena) inStream.readObject();
+        try {
+            Arena arena_rx = (Arena) inStream.readObject();
             controller.setArena_rx(arena_rx);
             System.out.println("Object received");
 //            System.out.println(arena_rx);
@@ -95,6 +125,11 @@ public class Server {
         }
     }
 
+    /**
+     * This method runs of his own thread, if the receive is enabled calls
+     * the primary receive method in an infinite loop, if the receive is disabled calls the disconnect method
+     */
+
     public void receive_loop() {
 
         while (rx_ON == true) {
@@ -104,10 +139,20 @@ public class Server {
 
     }
 
-    public void start_receive(){
+
+    /**
+     * This method enables the data receiving over the network
+     */
+
+    public void start_receive() {
 
         rx_ON = true;
     }
+
+    /**
+     * This method disables the data receiving over the network
+     */
+
     public void stop_receive() {
 
         rx_ON = false;

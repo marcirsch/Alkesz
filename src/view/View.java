@@ -26,9 +26,10 @@ import java.util.Map;
 /**
  * <h1>Graphical User Interface</h1>
  * This class implements the gui for the game.
- * @author  Gergő Fehér
+ *
+ * @author Gergő Fehér
  * @version 1.0
- * @since   2018-04-25
+ * @since 2018-04-25
  */
 public class View {
     private JFrame window;
@@ -40,7 +41,7 @@ public class View {
     private JPanel oppArenaPanel;
     private JPanel gameFieldLabels;
 
-//  Constants
+    //  Constants
     public static final int WINDOW_WIDTH = 600;
     public static final int WINDOW_HEIGHT = 500;
     public static final int WINDOW_X_POS = 10;
@@ -49,11 +50,12 @@ public class View {
     /**
      * Enumeration used for giving the pages a unique identifier.
      */
-    public enum PAGENAME{
+    public enum PAGENAME {
         MENU,
         TOPSCORES,
         GAME,
-        MULTIPLAYERSETTINGS}
+        MULTIPLAYERSETTINGS
+    }
 
     /**
      * The constructor of the GUI. It creates all the pages, sets the layout as well as all the listeners for the
@@ -71,61 +73,66 @@ public class View {
         window.setLayout(new GridBagLayout());
 
         this.controller = new GameEngine(this);
-        currentPage=PAGENAME.MENU;
+        currentPage = PAGENAME.MENU;
         pages = createPages();
         showPage(PAGENAME.MENU);
     }
 
     /**
      * This method invokes the creatator methods for the different pages and adds them to the application window.
+     *
+     * @return Map<PAGENAME   ,       JPanel> This returns a PAGENAME to JPanel Map, which is later used for opening the pages.
      * @see Map
      * @see PAGENAME
-     * @return Map<PAGENAME, JPanel> This returns a PAGENAME to JPanel Map, which is later used for opening the pages.
      */
-    private Map<PAGENAME, JPanel> createPages(){
-        Map<PAGENAME, JPanel> pages = new HashMap<PAGENAME,JPanel>();
+    private Map<PAGENAME, JPanel> createPages() {
+        Map<PAGENAME, JPanel> pages = new HashMap<PAGENAME, JPanel>();
 
-        pages.put(PAGENAME.MENU,createMenuPage());
-        pages.put(PAGENAME.TOPSCORES,createTopScoresPage());
-        pages.put(PAGENAME.GAME,createGamePage());
-        pages.put(PAGENAME.MULTIPLAYERSETTINGS,createMultiSettingsPage());
+        pages.put(PAGENAME.MENU, createMenuPage());
+        pages.put(PAGENAME.TOPSCORES, createTopScoresPage());
+        pages.put(PAGENAME.GAME, createGamePage());
+        pages.put(PAGENAME.MULTIPLAYERSETTINGS, createMultiSettingsPage());
         GridBagConstraints c = new GridBagConstraints();
-        c.gridx=0;
-        c.gridy=0;
-        c.fill=GridBagConstraints.BOTH;
-        c.anchor=GridBagConstraints.NORTH;
-        c.weightx=1;
-        c.weighty=1;
-        for(JPanel page : pages.values()){
-            this.window.add(page,c);
+        c.gridx = 0;
+        c.gridy = 0;
+        c.fill = GridBagConstraints.BOTH;
+        c.anchor = GridBagConstraints.NORTH;
+        c.weightx = 1;
+        c.weighty = 1;
+        for (JPanel page : pages.values()) {
+            this.window.add(page, c);
         }
         return pages;
     }
+
     /**
      * This method opens the page given as parameter.
+     *
      * @param pageToShow The PAGENAME of the page to show.
      * @see PAGENAME
      */
-    public void showPage(PAGENAME pageToShow){
+    public void showPage(PAGENAME pageToShow) {
         pages.get(pageToShow).setVisible(true);
-        if (pageToShow!=currentPage){
+        if (pageToShow != currentPage) {
             pages.get(currentPage).setVisible(false);
         }
-        currentPage=pageToShow;
+        currentPage = pageToShow;
     }
+
     /**
      * This method creates the menu page.
+     *
      * @return JPanel The JPanel object of the menu page.
      */
-    private JPanel createMenuPage(){
+    private JPanel createMenuPage() {
         JPanel page = new JPanel();
         GridBagConstraints gbc = new GridBagConstraints();
         page.setVisible(false);
-        page.setLayout(new GridBagLayout ());
+        page.setLayout(new GridBagLayout());
 
         JPanel headerPanel = new JPanel();
         JPanel navigationPanel = new JPanel();
-        JPanel difficultyPanel= new JPanel();
+        JPanel difficultyPanel = new JPanel();
 
 
         headerPanel.setLayout(new GridBagLayout());
@@ -134,9 +141,9 @@ public class View {
         gbc.gridy = 0;
         gbc.insets = new Insets(2, 2, 2, 2);
         gbc.insets = new Insets(2, 2, 2, 2);
-        JLabel headerLabel = new JLabel("BLACKOUT",JLabel.CENTER );
-        headerLabel.setFont(new Font("Comic Sans", Font.ITALIC+Font.BOLD, 24));
-        headerPanel.add(headerLabel,gbc);
+        JLabel headerLabel = new JLabel("BLACKOUT", JLabel.CENTER);
+        headerLabel.setFont(new Font("Comic Sans", Font.ITALIC + Font.BOLD, 24));
+        headerPanel.add(headerLabel, gbc);
 
         navigationPanel.setLayout(new GridBagLayout());
         navigationPanel.setBackground(Color.LIGHT_GRAY);
@@ -145,27 +152,27 @@ public class View {
         gbc.gridy = 0;
         gbc.insets = new Insets(2, 2, 20, 2);
 
-        JLabel singleplayerLabel = new JLabel("Lonely alcoholic",JLabel.CENTER);
+        JLabel singleplayerLabel = new JLabel("Lonely alcoholic", JLabel.CENTER);
         singleplayerLabel.setFont(new Font("Comic Sans", Font.ITALIC, 16));
         singleplayerLabel.addMouseListener(makeBoldOnHoverListener());
         singleplayerLabel.addMouseListener(openPageOnClickListener(PAGENAME.GAME));
         singleplayerLabel.addMouseListener(startGameOnClickListener());
 
-        JLabel multiplayerLabel = new JLabel("Drink with buddy",JLabel.CENTER);
+        JLabel multiplayerLabel = new JLabel("Drink with buddy", JLabel.CENTER);
         multiplayerLabel.addMouseListener(makeBoldOnHoverListener());
         multiplayerLabel.addMouseListener(openPageOnClickListener(PAGENAME.MULTIPLAYERSETTINGS));
 
         multiplayerLabel.setFont(new Font("Comic Sans", Font.ITALIC, 16));
-        JLabel topscoresLabel = new JLabel("Boozy Hall of Fame",JLabel.CENTER);
+        JLabel topscoresLabel = new JLabel("Boozy Hall of Fame", JLabel.CENTER);
         topscoresLabel.addMouseListener(makeBoldOnHoverListener());
         topscoresLabel.addMouseListener(openPageOnClickListener(PAGENAME.TOPSCORES));
 
         topscoresLabel.setFont(new Font("Comic Sans", Font.ITALIC, 16));
-        navigationPanel.add(singleplayerLabel,gbc);
+        navigationPanel.add(singleplayerLabel, gbc);
         gbc.gridy++;
-        navigationPanel.add(multiplayerLabel,gbc);
+        navigationPanel.add(multiplayerLabel, gbc);
         gbc.gridy++;
-        navigationPanel.add(topscoresLabel,gbc);
+        navigationPanel.add(topscoresLabel, gbc);
 
         Map<GAME_DIFFICULTY, JLabel> difficultyLabels = new HashMap<GAME_DIFFICULTY, JLabel>();
         difficultyPanel.setBackground(Color.LIGHT_GRAY);
@@ -175,212 +182,215 @@ public class View {
         gbc.gridy = 0;
         gbc.gridwidth = 3;
 
-        JLabel difficultyLabel = new JLabel("Difficulty:",JLabel.CENTER);
-        difficultyLabel.setFont(new Font("Comic Sans", Font.ITALIC+Font.BOLD, 18));
+        JLabel difficultyLabel = new JLabel("Difficulty:", JLabel.CENTER);
+        difficultyLabel.setFont(new Font("Comic Sans", Font.ITALIC + Font.BOLD, 18));
 
-        JLabel easyLabel = new JLabel("Sober",JLabel.CENTER);
-        easyLabel.addMouseListener(setDifficultyListener(GAME_DIFFICULTY.EASY,difficultyLabels));
-        easyLabel.setFont(new Font("Comic Sans", Font.ITALIC+Font.BOLD, 14));
-        difficultyLabels.put(GAME_DIFFICULTY.EASY,easyLabel);
+        JLabel easyLabel = new JLabel("Sober", JLabel.CENTER);
+        easyLabel.addMouseListener(setDifficultyListener(GAME_DIFFICULTY.EASY, difficultyLabels));
+        easyLabel.setFont(new Font("Comic Sans", Font.ITALIC + Font.BOLD, 14));
+        difficultyLabels.put(GAME_DIFFICULTY.EASY, easyLabel);
 
-        JLabel mediumLabel = new JLabel("Tipsy",JLabel.CENTER);
-        mediumLabel.addMouseListener(setDifficultyListener(GAME_DIFFICULTY.MEDIUM,difficultyLabels));
+        JLabel mediumLabel = new JLabel("Tipsy", JLabel.CENTER);
+        mediumLabel.addMouseListener(setDifficultyListener(GAME_DIFFICULTY.MEDIUM, difficultyLabels));
         mediumLabel.setFont(new Font("Comic Sans", Font.ITALIC, 14));
-        difficultyLabels.put(GAME_DIFFICULTY.MEDIUM,mediumLabel);
+        difficultyLabels.put(GAME_DIFFICULTY.MEDIUM, mediumLabel);
 
-        JLabel hardLabel = new JLabel("Blackout",JLabel.CENTER);
-        hardLabel.addMouseListener(setDifficultyListener(GAME_DIFFICULTY.HARD,difficultyLabels));
+        JLabel hardLabel = new JLabel("Blackout", JLabel.CENTER);
+        hardLabel.addMouseListener(setDifficultyListener(GAME_DIFFICULTY.HARD, difficultyLabels));
         hardLabel.setFont(new Font("Comic Sans", Font.ITALIC, 14));
-        difficultyLabels.put(GAME_DIFFICULTY.HARD,hardLabel);
+        difficultyLabels.put(GAME_DIFFICULTY.HARD, hardLabel);
 
 
-        difficultyPanel.add(difficultyLabel,gbc);
+        difficultyPanel.add(difficultyLabel, gbc);
 
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(2, 10, 2, 10);
         gbc.gridwidth = 1;
         gbc.gridy++;
-        difficultyPanel.add(easyLabel,gbc);
+        difficultyPanel.add(easyLabel, gbc);
         gbc.gridx++;
-        difficultyPanel.add(mediumLabel,gbc);
+        difficultyPanel.add(mediumLabel, gbc);
         gbc.gridx++;
-        difficultyPanel.add(hardLabel,gbc);
+        difficultyPanel.add(hardLabel, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.weightx=1;
-        gbc.weighty=1;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
         gbc.insets = new Insets(2, 2, 2, 2);
         gbc.fill = GridBagConstraints.BOTH;
-        page.add(headerPanel,gbc);
+        page.add(headerPanel, gbc);
         gbc.gridy++;
-        gbc.weighty=3;
-        page.add(navigationPanel,gbc);
+        gbc.weighty = 3;
+        page.add(navigationPanel, gbc);
         gbc.gridy++;
-        gbc.weighty=2;
-        page.add(difficultyPanel,gbc);
+        gbc.weighty = 2;
+        page.add(difficultyPanel, gbc);
 
         return page;
     }
+
     /**
      * This method creates the topscores page.
+     *
      * @return JPanel The JPanel object of the topscores page.
      */
-    private JPanel createTopScoresPage(){
+    private JPanel createTopScoresPage() {
         JPanel page = new JPanel();
         GridBagConstraints gbc = new GridBagConstraints();
         page.setVisible(false);
-        page.setLayout(new GridBagLayout ());
+        page.setLayout(new GridBagLayout());
 
 //        Panels
         JPanel headerPanel = new JPanel();
 
-        gbc.fill=GridBagConstraints.HORIZONTAL;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.weightx=1;
-        gbc.weighty=0.5;
-        gbc.insets= new Insets(2, 2, 2, 2);
+        gbc.weightx = 1;
+        gbc.weighty = 0.5;
+        gbc.insets = new Insets(2, 2, 2, 2);
         gbc.anchor = GridBagConstraints.NORTH;
-        page.add(headerPanel,gbc);
+        page.add(headerPanel, gbc);
 
 
         headerPanel.setLayout(new GridBagLayout());
 
-        gbc.fill=GridBagConstraints.HORIZONTAL;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.weightx=1;
+        gbc.weightx = 1;
         gbc.anchor = GridBagConstraints.WEST;
-        gbc.insets= new Insets(2, 2, 2, 2);
-        JLabel backLabel = new JLabel("< Back",JLabel.LEFT);
+        gbc.insets = new Insets(2, 2, 2, 2);
+        JLabel backLabel = new JLabel("< Back", JLabel.LEFT);
         backLabel.setFont(new Font("Comic Sans", Font.ITALIC, 16));
         backLabel.addMouseListener(makeBoldOnHoverListener());
         backLabel.addMouseListener(openPageOnClickListener(PAGENAME.MENU));
-        JLabel headerLabel = new JLabel("Top scores",JLabel.CENTER);
-        headerLabel.setFont(new Font("Comic Sans", Font.ITALIC+Font.BOLD, 24));
-        headerPanel.add(backLabel,gbc);
+        JLabel headerLabel = new JLabel("Top scores", JLabel.CENTER);
+        headerLabel.setFont(new Font("Comic Sans", Font.ITALIC + Font.BOLD, 24));
+        headerPanel.add(backLabel, gbc);
         gbc.gridx++;
         gbc.anchor = GridBagConstraints.NORTH;
-        gbc.weightx=3;
-        headerPanel.add(headerLabel,gbc);
+        gbc.weightx = 3;
+        headerPanel.add(headerLabel, gbc);
         gbc.gridx++;
-        gbc.weightx=1.5;
-        headerPanel.add(new JLabel("",JLabel.CENTER),gbc);
+        gbc.weightx = 1.5;
+        headerPanel.add(new JLabel("", JLabel.CENTER), gbc);
         headerPanel.setBackground(Color.RED);
 //
         JPanel toplistPanel = new JPanel();
         toplistPanel.setLayout(new GridBagLayout());
         this.toplistHandle = toplistPanel;
         refreshToplist();
-        gbc.gridy=1;
-        gbc.gridx=0;
-        page.add(toplistPanel,gbc);
+        gbc.gridy = 1;
+        gbc.gridx = 0;
+        page.add(toplistPanel, gbc);
 
         return page;
     }
+
     /**
      * This method creates the multiplayer settings page.
+     *
      * @return JPanel The JPanel object of the multiplayer settings page.
      */
-    private JPanel createMultiSettingsPage(){
+    private JPanel createMultiSettingsPage() {
         JPanel page = new JPanel();
         GridBagConstraints gbc = new GridBagConstraints();
         page.setVisible(false);
-        page.setLayout(new GridBagLayout ());
+        page.setLayout(new GridBagLayout());
 
         JPanel headerPanel = new JPanel();
         JPanel rolePanel = new JPanel();
-        JPanel addressPanel= new JPanel();
-        JPanel connectPanel= new JPanel();
+        JPanel addressPanel = new JPanel();
+        JPanel connectPanel = new JPanel();
 
-        gbc.fill=GridBagConstraints.HORIZONTAL;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.weightx=1;
-        gbc.weighty=0.5;
-        gbc.insets= new Insets(2, 2, 2, 2);
+        gbc.weightx = 1;
+        gbc.weighty = 0.5;
+        gbc.insets = new Insets(2, 2, 2, 2);
         gbc.anchor = GridBagConstraints.NORTH;
-        page.add(headerPanel,gbc);
+        page.add(headerPanel, gbc);
         gbc.gridy++;
-        gbc.weighty=1.5;
-        page.add(rolePanel,gbc);
+        gbc.weighty = 1.5;
+        page.add(rolePanel, gbc);
         gbc.gridy++;
-        gbc.weighty=1;
-        page.add(addressPanel,gbc);
+        gbc.weighty = 1;
+        page.add(addressPanel, gbc);
         gbc.gridy++;
-        gbc.weighty=2;
-        page.add(connectPanel,gbc);
+        gbc.weighty = 2;
+        page.add(connectPanel, gbc);
 
         headerPanel.setLayout(new GridBagLayout());
 
-        gbc.fill=GridBagConstraints.HORIZONTAL;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.weightx=1;
+        gbc.weightx = 1;
         gbc.anchor = GridBagConstraints.WEST;
-        gbc.insets= new Insets(2, 2, 2, 2);
-        JLabel backLabel = new JLabel("< Back",JLabel.LEFT);
+        gbc.insets = new Insets(2, 2, 2, 2);
+        JLabel backLabel = new JLabel("< Back", JLabel.LEFT);
         backLabel.setFont(new Font("Comic Sans", Font.ITALIC, 16));
         backLabel.addMouseListener(makeBoldOnHoverListener());
         backLabel.addMouseListener(openPageOnClickListener(PAGENAME.MENU));
-        JLabel headerLabel = new JLabel("Multipayer settings",JLabel.CENTER);
-        headerLabel.setFont(new Font("Comic Sans", Font.ITALIC+Font.BOLD, 24));
-        headerPanel.add(backLabel,gbc);
+        JLabel headerLabel = new JLabel("Multipayer settings", JLabel.CENTER);
+        headerLabel.setFont(new Font("Comic Sans", Font.ITALIC + Font.BOLD, 24));
+        headerPanel.add(backLabel, gbc);
         gbc.gridx++;
         gbc.anchor = GridBagConstraints.NORTH;
-        gbc.weightx=3;
-        headerPanel.add(headerLabel,gbc);
+        gbc.weightx = 3;
+        headerPanel.add(headerLabel, gbc);
         gbc.gridx++;
-        gbc.weightx=1.5;
-        headerPanel.add(new JLabel("",JLabel.CENTER),gbc);
+        gbc.weightx = 1.5;
+        headerPanel.add(new JLabel("", JLabel.CENTER), gbc);
         headerPanel.setBackground(Color.RED);
 
 
-        Map<SERVER_CLIENT_ROLE,JLabel> roleLabels = new HashMap<SERVER_CLIENT_ROLE,JLabel>();
+        Map<SERVER_CLIENT_ROLE, JLabel> roleLabels = new HashMap<SERVER_CLIENT_ROLE, JLabel>();
         rolePanel.setLayout(new GridBagLayout());
-        gbc.fill=GridBagConstraints.NONE;
+        gbc.fill = GridBagConstraints.NONE;
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.weightx=1;
-        gbc.insets= new Insets(2, 2, 10, 2);
-        JLabel multiplayerroleLable = new JLabel("Multiplayer role",JLabel.CENTER);
-        multiplayerroleLable.setFont(new Font("Comic Sans", Font.ITALIC+Font.BOLD, 18));
-        rolePanel.add(multiplayerroleLable,gbc);
-        JLabel serverLabel = new JLabel("Server",JLabel.CENTER);
-        roleLabels.put(SERVER_CLIENT_ROLE.SERVER,serverLabel);
+        gbc.weightx = 1;
+        gbc.insets = new Insets(2, 2, 10, 2);
+        JLabel multiplayerroleLable = new JLabel("Multiplayer role", JLabel.CENTER);
+        multiplayerroleLable.setFont(new Font("Comic Sans", Font.ITALIC + Font.BOLD, 18));
+        rolePanel.add(multiplayerroleLable, gbc);
+        JLabel serverLabel = new JLabel("Server", JLabel.CENTER);
+        roleLabels.put(SERVER_CLIENT_ROLE.SERVER, serverLabel);
 
-        serverLabel.setFont(new Font("Comic Sans", Font.ITALIC+Font.BOLD, 16));
+        serverLabel.setFont(new Font("Comic Sans", Font.ITALIC + Font.BOLD, 16));
 
         gbc.gridy++;
-        gbc.insets= new Insets(2, 2, 5, 2);
-        rolePanel.add(serverLabel,gbc);
-        JLabel clientLabel = new JLabel("Client",JLabel.CENTER);
-        roleLabels.put(SERVER_CLIENT_ROLE.CLIENT,clientLabel);
+        gbc.insets = new Insets(2, 2, 5, 2);
+        rolePanel.add(serverLabel, gbc);
+        JLabel clientLabel = new JLabel("Client", JLabel.CENTER);
+        roleLabels.put(SERVER_CLIENT_ROLE.CLIENT, clientLabel);
 
         clientLabel.setFont(new Font("Comic Sans", Font.ITALIC, 16));
         gbc.gridy++;
-        rolePanel.add(clientLabel,gbc);
+        rolePanel.add(clientLabel, gbc);
         rolePanel.setBackground(Color.LIGHT_GRAY);
-
 
 
         addressPanel.setLayout(new GridBagLayout());
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.weightx=1;
-        gbc.insets= new Insets(2, 2, 2, 2);
-        JLabel ipLabel = new JLabel("Your IP:",JLabel.CENTER);
-        ipLabel.setFont(new Font("Comic Sans", Font.ITALIC+Font.BOLD, 18));
-        addressPanel.add(ipLabel,gbc);
+        gbc.weightx = 1;
+        gbc.insets = new Insets(2, 2, 2, 2);
+        JLabel ipLabel = new JLabel("Your IP:", JLabel.CENTER);
+        ipLabel.setFont(new Font("Comic Sans", Font.ITALIC + Font.BOLD, 18));
+        addressPanel.add(ipLabel, gbc);
         gbc.gridy++;
-        JLabel ip = new JLabel(controller.settings.getLocalIPAddress(),JLabel.CENTER);
+        JLabel ip = new JLabel(controller.settings.getLocalIPAddress(), JLabel.CENTER);
         ip.setFont(new Font("Comic Sans", Font.ITALIC, 16));
         ip.setVisible(true);
-        addressPanel.add(ip,gbc);
+        addressPanel.add(ip, gbc);
         addressPanel.setBackground(Color.LIGHT_GRAY);
 
-        JFormattedTextField ipInputField= new JFormattedTextField();
+        JFormattedTextField ipInputField = new JFormattedTextField();
         try {
             MaskFormatter mf = new MaskFormatter("###.###.###.###");
             mf.setPlaceholderCharacter('0');
@@ -390,10 +400,10 @@ public class View {
             ipInputField.setFont(new Font("Comic Sans", Font.ITALIC, 16));
             ipInputField.setVisible(false);
             gbc.gridy++;
-            addressPanel.add(ipInputField,gbc);
-            clientLabel.addMouseListener(setServerClientRoleListener(SERVER_CLIENT_ROLE.CLIENT,roleLabels,ipLabel,ip,ipInputField));
-            serverLabel.addMouseListener(setServerClientRoleListener(SERVER_CLIENT_ROLE.SERVER,roleLabels,ipLabel,ip,ipInputField));
-        }catch (java.text.ParseException exc) {
+            addressPanel.add(ipInputField, gbc);
+            clientLabel.addMouseListener(setServerClientRoleListener(SERVER_CLIENT_ROLE.CLIENT, roleLabels, ipLabel, ip, ipInputField));
+            serverLabel.addMouseListener(setServerClientRoleListener(SERVER_CLIENT_ROLE.SERVER, roleLabels, ipLabel, ip, ipInputField));
+        } catch (java.text.ParseException exc) {
             System.err.println("formatter is bad: " + exc.getMessage());
             System.exit(-1);
         }
@@ -402,189 +412,193 @@ public class View {
         JButton connectBtn = new JButton("Connect");
         connectBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (ipInputField.getInputVerifier().verify(ipInputField)){
-                    if (ipInputField.getText() == "000.000.000.000"){
+                if (ipInputField.getInputVerifier().verify(ipInputField)) {
+                    if (ipInputField.getText() == "000.000.000.000") {
                         controller.settings.setRemoteIPAddress("127.0.0.1");
-                    }else {
+                    } else {
                         controller.settings.setRemoteIPAddress(ipInputField.getText());
                     }
-                    System.out.println("Server ip to connect: "+ipInputField.getText());
+                    System.out.println("Server ip to connect: " + ipInputField.getText());
 
-                    if(controller.settings.getRole() == SERVER_CLIENT_ROLE.CLIENT){
+                    if (controller.settings.getRole() == SERVER_CLIENT_ROLE.CLIENT) {
 
 // TODO gombnyomásra indulás
 // TODO IP-t kicserélni
                         controller.startClient();
                     }
 
-                    if(controller.settings.getRole() == SERVER_CLIENT_ROLE.SERVER){
+                    if (controller.settings.getRole() == SERVER_CLIENT_ROLE.SERVER) {
                         controller.startServer();
                     }
 
                 }
             }
-        } );
+        });
 //        TODO Ide kell még egy gomb a szerver indításhoz
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 1;
-        connectPanel.add(connectBtn,gbc);
+        connectPanel.add(connectBtn, gbc);
         return page;
     }
+
     /**
      * This method creates the game page.
+     *
      * @return JPanel The JPanel object of the game page.
      */
-    private JPanel createGamePage(){
+    private JPanel createGamePage() {
         JPanel page = new JPanel();
         GridBagConstraints gbc = new GridBagConstraints();
         page.setVisible(false);
-        page.setLayout(new GridBagLayout ());
+        page.setLayout(new GridBagLayout());
 
 //        Panels
         JPanel headerPanel = new JPanel();
 
-        gbc.fill=GridBagConstraints.HORIZONTAL;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 1;
         gbc.weighty = 0.5;
-        gbc.insets= new Insets(2, 2, 2, 2);
+        gbc.insets = new Insets(2, 2, 2, 2);
         gbc.anchor = GridBagConstraints.NORTH;
-        page.add(headerPanel,gbc);
+        page.add(headerPanel, gbc);
 
 
         headerPanel.setLayout(new GridBagLayout());
 
-        gbc.fill=GridBagConstraints.HORIZONTAL;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.weightx=1;
+        gbc.weightx = 1;
         gbc.anchor = GridBagConstraints.WEST;
-        gbc.insets= new Insets(2, 2, 2, 2);
-        JLabel backLabel = new JLabel("< Back",JLabel.LEFT);
+        gbc.insets = new Insets(2, 2, 2, 2);
+        JLabel backLabel = new JLabel("< Back", JLabel.LEFT);
         backLabel.setFont(new Font("Comic Sans", Font.ITALIC, 16));
         backLabel.addMouseListener(makeBoldOnHoverListener());
         backLabel.addMouseListener(openPageOnClickListener(PAGENAME.MENU));
         backLabel.addMouseListener(stopGameOnClickListener());
-        JLabel headerLabel = new JLabel("GAME SCREEN",JLabel.CENTER);
-        headerLabel.setFont(new Font("Comic Sans", Font.ITALIC+Font.BOLD, 24));
-        headerPanel.add(backLabel,gbc);
+        JLabel headerLabel = new JLabel("GAME SCREEN", JLabel.CENTER);
+        headerLabel.setFont(new Font("Comic Sans", Font.ITALIC + Font.BOLD, 24));
+        headerPanel.add(backLabel, gbc);
         gbc.gridx++;
         gbc.anchor = GridBagConstraints.NORTH;
-        gbc.weightx=3;
-        headerPanel.add(headerLabel,gbc);
+        gbc.weightx = 3;
+        headerPanel.add(headerLabel, gbc);
         gbc.gridx++;
-        gbc.weightx=1.5;
-        headerPanel.add(new JLabel("",JLabel.CENTER),gbc);
+        gbc.weightx = 1.5;
+        headerPanel.add(new JLabel("", JLabel.CENTER), gbc);
         headerPanel.setBackground(Color.RED);
 
 //        TODO Leválasztani saját játéktrre és ellenfl játéktére, az ellenfél játékterének láthatóságán a visibility állításával operálunk majd.
 //        TODO A fall object tetején lévő elemeket mindig átírjuk attól függően, hogy mit kapunk. A tövvit csak megjelenítjük.
-        gbc.fill=GridBagConstraints.BOTH;
-        gbc.gridx=0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridx = 0;
         gbc.gridy++;
-        gbc.weighty=1;
-        gbc.weightx=1;
+        gbc.weighty = 1;
+        gbc.weightx = 1;
         JPanel scoresPanel = new JPanel();
         scoresPanel.setLayout(new GridBagLayout());
-        page.add(scoresPanel,gbc);
+        page.add(scoresPanel, gbc);
 
-        gbc.gridx=0;
+        gbc.gridx = 0;
         gbc.gridy++;
-        gbc.weighty=23;
-        gbc.fill=GridBagConstraints.BOTH;
+        gbc.weighty = 23;
+        gbc.fill = GridBagConstraints.BOTH;
         JPanel gamePanels = new JPanel();
         gamePanels.setLayout(new GridBagLayout());
         gamePanels.setBackground(Color.ORANGE);
-        page.add(gamePanels,gbc);
+        page.add(gamePanels, gbc);
 
-        gbc.gridx=0;
-        gbc.gridy=0;
-        gbc.weighty=1;
-        gbc.weightx=1;
-        ArenaRenderer arenaPanel =  new ArenaRenderer(this.controller.getArena());
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weighty = 1;
+        gbc.weightx = 1;
+        ArenaRenderer arenaPanel = new ArenaRenderer(this.controller.getArena());
         arenaPanel.addMouseListener(hoverOverArenaListener());
         this.controller.setArenaRenderer(arenaPanel);
-        gamePanels.add(arenaPanel,gbc);
+        gamePanels.add(arenaPanel, gbc);
         this.playerArenaPanel = arenaPanel;
 
-        gbc.gridy=0;
-        gbc.gridx=1;
-        gbc.weighty=1;
-        gbc.weightx=1;
-        ArenaRenderer opponentArenaPanel =  new ArenaRenderer(this.controller.getOppArena());
+        gbc.gridy = 0;
+        gbc.gridx = 1;
+        gbc.weighty = 1;
+        gbc.weightx = 1;
+        ArenaRenderer opponentArenaPanel = new ArenaRenderer(this.controller.getOppArena());
 ////        this.controller.setArenaRenderer(arenaPanel);
-        gamePanels.add(opponentArenaPanel,gbc);
+        gamePanels.add(opponentArenaPanel, gbc);
         this.oppArenaPanel = opponentArenaPanel;
         this.controller.setOppArenaRenderer(opponentArenaPanel);
 
-        JLabel alcoholLevelLabel = new JLabel("Blood alcohol:",JLabel.CENTER);
-        alcoholLevelLabel.setFont(new Font("Comic Sans", Font.ITALIC+Font.BOLD, 16));
+        JLabel alcoholLevelLabel = new JLabel("Blood alcohol:", JLabel.CENTER);
+        alcoholLevelLabel.setFont(new Font("Comic Sans", Font.ITALIC + Font.BOLD, 16));
         JLabel missedLabel = new JLabel("Missed:", JLabel.CENTER);
-        missedLabel.setFont(new Font("Comic Sans", Font.ITALIC+Font.BOLD, 16));
-        JLabel scoreLable = new JLabel("Score",JLabel.CENTER);
-        scoreLable.setFont(new Font("Comic Sans", Font.ITALIC+Font.BOLD, 16));
-        JLabel alcoholLevel = new JLabel("xx.xx",JLabel.CENTER);
-        alcoholLevel.setFont(new Font("Comic Sans", Font.ITALIC+Font.BOLD, 16));
+        missedLabel.setFont(new Font("Comic Sans", Font.ITALIC + Font.BOLD, 16));
+        JLabel scoreLable = new JLabel("Score", JLabel.CENTER);
+        scoreLable.setFont(new Font("Comic Sans", Font.ITALIC + Font.BOLD, 16));
+        JLabel alcoholLevel = new JLabel("xx.xx", JLabel.CENTER);
+        alcoholLevel.setFont(new Font("Comic Sans", Font.ITALIC + Font.BOLD, 16));
         arenaPanel.setAlcoholLevelLabel(alcoholLevel);
-        JLabel missed = new JLabel("0",JLabel.CENTER);
-        missed.setFont(new Font("Comic Sans", Font.ITALIC+Font.BOLD, 16));
+        JLabel missed = new JLabel("0", JLabel.CENTER);
+        missed.setFont(new Font("Comic Sans", Font.ITALIC + Font.BOLD, 16));
         arenaPanel.setMissedLabel(missed);
-        JLabel score = new JLabel("0",JLabel.CENTER);
-        score.setFont(new Font("Comic Sans", Font.ITALIC+Font.BOLD, 16));
+        JLabel score = new JLabel("0", JLabel.CENTER);
+        score.setFont(new Font("Comic Sans", Font.ITALIC + Font.BOLD, 16));
         arenaPanel.setScoreLabel(score);
 
 
-        gbc.fill=GridBagConstraints.BOTH;
-        gbc.gridx=0;
-        gbc.gridy=0;
-        gbc.weighty=1;
-        gbc.weightx=1;
-        scoresPanel.add(alcoholLevelLabel,gbc);
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weighty = 1;
+        gbc.weightx = 1;
+        scoresPanel.add(alcoholLevelLabel, gbc);
         gbc.gridx++;
-        scoresPanel.add(missedLabel,gbc);
+        scoresPanel.add(missedLabel, gbc);
         gbc.gridx++;
-        scoresPanel.add(scoreLable,gbc);
-        gbc.gridx=0;
+        scoresPanel.add(scoreLable, gbc);
+        gbc.gridx = 0;
         gbc.gridy++;
-        scoresPanel.add(alcoholLevel,gbc);
+        scoresPanel.add(alcoholLevel, gbc);
         gbc.gridx++;
-        scoresPanel.add(missed,gbc);
+        scoresPanel.add(missed, gbc);
         gbc.gridx++;
-        scoresPanel.add(score,gbc);
+        scoresPanel.add(score, gbc);
 
-        JPanel gameFieldLabels =  new JPanel();
+        JPanel gameFieldLabels = new JPanel();
         gameFieldLabels.setLayout(new GridBagLayout());
-        gbc.gridx=0;
+        gbc.gridx = 0;
         gbc.gridy++;
-        gbc.gridwidth=3;
-        gbc.weighty=0.5;
-        scoresPanel.add(gameFieldLabels,gbc);
+        gbc.gridwidth = 3;
+        gbc.weighty = 0.5;
+        scoresPanel.add(gameFieldLabels, gbc);
         gameFieldLabels.setBackground(Color.RED);
         this.gameFieldLabels = gameFieldLabels;
 
-        gbc.gridwidth=1;
-        gbc.gridx=0;
-        gbc.gridy=0;
-        gbc.weightx=1;
-        JLabel youLabel = new JLabel("You",JLabel.CENTER);
-        youLabel.setFont(new Font("Comic Sans", Font.ITALIC+Font.BOLD, 12));
-        gameFieldLabels.add(youLabel,gbc);
+        gbc.gridwidth = 1;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        JLabel youLabel = new JLabel("You", JLabel.CENTER);
+        youLabel.setFont(new Font("Comic Sans", Font.ITALIC + Font.BOLD, 12));
+        gameFieldLabels.add(youLabel, gbc);
 
-        gbc.gridx=2;
-        gbc.weightx=1;
-        JLabel oppLabel = new JLabel("Opponent",JLabel.CENTER);
-        oppLabel.setFont(new Font("Comic Sans", Font.ITALIC+Font.BOLD, 12));
-        gameFieldLabels.add(oppLabel,gbc);
+        gbc.gridx = 2;
+        gbc.weightx = 1;
+        JLabel oppLabel = new JLabel("Opponent", JLabel.CENTER);
+        oppLabel.setFont(new Font("Comic Sans", Font.ITALIC + Font.BOLD, 12));
+        gameFieldLabels.add(oppLabel, gbc);
 
         return page;
     }
+
     /**
      * This method creates a listener responsible for making a label bold on hover.
+     *
      * @return MouseListener The MouseListener object.
      */
-    private MouseListener makeBoldOnHoverListener(){
+    private MouseListener makeBoldOnHoverListener() {
         MouseListener listener = new MouseAdapter() {
             Font original;
 
@@ -604,13 +618,15 @@ public class View {
         };
         return listener;
     }
+
     /**
      * This method creates a listener that is responsible for opening the page given as a param when the object
      * it is assigned gets clicked.
+     *
      * @param pageToShow The page to show upon click
      * @return MouseListener The MouseListener object.
      */
-    private MouseListener openPageOnClickListener(PAGENAME pageToShow){
+    private MouseListener openPageOnClickListener(PAGENAME pageToShow) {
         MouseListener listener = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -619,31 +635,35 @@ public class View {
         };
         return listener;
     }
+
     /**
      * This method creates a listener that is responsible for changing the difficulty setting to the given param,
      * when the object it is assigned gets clicked. It also changes the font of the appropriate label, so it more
      * visible, which is the active setting.
-     * @param difficulty The difficulty to set
+     *
+     * @param difficulty       The difficulty to set
      * @param difficultyLabels The GAME_DIFFICULTY to JLabel map used for setting the proper font of the labels.
      * @return MouseListener The MouseListener object.
      */
-    private MouseListener setDifficultyListener(GAME_DIFFICULTY difficulty, Map<GAME_DIFFICULTY, JLabel> difficultyLabels){
+    private MouseListener setDifficultyListener(GAME_DIFFICULTY difficulty, Map<GAME_DIFFICULTY, JLabel> difficultyLabels) {
         MouseListener listener = new MouseAdapter() {
             Font font;
             Font original;
+
             @Override
             public void mouseClicked(MouseEvent e) {
-                for (JLabel label: difficultyLabels.values()){
+                for (JLabel label : difficultyLabels.values()) {
                     font = label.getFont();
                     label.setFont(font.deriveFont(font.getStyle() & ~Font.BOLD));
                 }
                 System.out.println("Current difficulty : " + difficulty);
                 JLabel label = difficultyLabels.get(difficulty);
                 font = label.getFont();
-                original=font.deriveFont(font.getStyle() | Font.BOLD);
+                original = font.deriveFont(font.getStyle() | Font.BOLD);
                 label.setFont(original);
                 controller.settings.setDifficulty(difficulty);
             }
+
             @Override
             public void mouseEntered(MouseEvent e) {
                 original = e.getComponent().getFont();
@@ -659,43 +679,47 @@ public class View {
         };
         return listener;
     }
+
     /**
      * This method creates a listener that is responsible for changing the server-client role setting to the given param,
      * when the object it is assigned gets clicked. It also changes the font of the appropriate label, so it more
      * visible, which is the active setting as well as it toggles the visibility for the IP address input field.
-     * @param role The role to set
-     * @param roleLabels The SERVER_CLIENT_ROLE to JLabel map used for setting the proper font of the labels.
+     *
+     * @param role         The role to set
+     * @param roleLabels   The SERVER_CLIENT_ROLE to JLabel map used for setting the proper font of the labels.
      * @param ipLabel
      * @param localIpLabel
      * @param ipInputField
      * @return MouseListener The MouseListener object.
      */
-    private MouseListener setServerClientRoleListener(SERVER_CLIENT_ROLE role,Map<SERVER_CLIENT_ROLE, JLabel> roleLabels,JLabel ipLabel,JLabel localIpLabel,JFormattedTextField ipInputField){
+    private MouseListener setServerClientRoleListener(SERVER_CLIENT_ROLE role, Map<SERVER_CLIENT_ROLE, JLabel> roleLabels, JLabel ipLabel, JLabel localIpLabel, JFormattedTextField ipInputField) {
         MouseListener listener = new MouseAdapter() {
             Font font;
             Font original;
+
             @Override
             public void mouseClicked(MouseEvent e) {
-                for (JLabel label: roleLabels.values()){
+                for (JLabel label : roleLabels.values()) {
                     font = label.getFont();
                     label.setFont(font.deriveFont(font.getStyle() & ~Font.BOLD));
                 }
                 System.out.println("Current role : " + role);
                 JLabel label = roleLabels.get(role);
                 font = label.getFont();
-                original=font.deriveFont(font.getStyle() | Font.BOLD);
+                original = font.deriveFont(font.getStyle() | Font.BOLD);
                 label.setFont(original);
                 controller.settings.setRole(role);
-                if (role==SERVER_CLIENT_ROLE.SERVER){
+                if (role == SERVER_CLIENT_ROLE.SERVER) {
                     ipInputField.setVisible(false);
                     localIpLabel.setVisible(true);
                     ipLabel.setText("Your IP");
-                }else{
+                } else {
                     ipInputField.setVisible(true);
                     localIpLabel.setVisible(false);
                     ipLabel.setText("Server IP");
                 }
             }
+
             @Override
             public void mouseEntered(MouseEvent e) {
                 original = e.getComponent().getFont();
@@ -711,11 +735,13 @@ public class View {
         };
         return listener;
     }
+
     /**
      * This method creates a listener that is responsible for starting the game once the object it is assigned to is clicked upon.
+     *
      * @return MouseListener The MouseListener object.
      */
-    private MouseListener startGameOnClickListener(){
+    private MouseListener startGameOnClickListener() {
         MouseListener listener = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -725,11 +751,13 @@ public class View {
 
         return listener;
     }
+
     /**
      * This method creates a listener that is responsible for stopping the game once the object it is assigned to is clicked upon.
+     *
      * @return MouseListener The MouseListener object.
      */
-    private MouseListener stopGameOnClickListener(){
+    private MouseListener stopGameOnClickListener() {
         MouseListener listener = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -738,11 +766,12 @@ public class View {
         };
         return listener;
     }
+
     /**
      * This method creates a listener that is responsible for hiding the cursor if its above the game field.
      * * @return MouseListener The MouseListener object.
      */
-    private MouseListener hoverOverArenaListener(){
+    private MouseListener hoverOverArenaListener() {
         MouseListener listener = new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -751,7 +780,7 @@ public class View {
 
                 // Create a new blank cursor.
                 Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
-                                        cursorImg, new Point(0, 0), "blank cursor");
+                        cursorImg, new Point(0, 0), "blank cursor");
                 e.getComponent().setCursor(blankCursor);
             }
 
@@ -766,82 +795,84 @@ public class View {
     /**
      * This method refreshes the toplist page once it is invoked.
      */
-    public void refreshToplist(){
+    public void refreshToplist() {
         toplistHandle.removeAll();
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridy=0;
-        gbc.gridx=0;
-        gbc.weightx=2;
+        gbc.gridy = 0;
+        gbc.gridx = 0;
+        gbc.weightx = 2;
         gbc.anchor = GridBagConstraints.NORTH;
-        gbc.fill=GridBagConstraints.HORIZONTAL;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        toplistHandle.add(new JLabel("Rank",JLabel.RIGHT),gbc);
+        toplistHandle.add(new JLabel("Rank", JLabel.RIGHT), gbc);
         gbc.gridx++;
-        gbc.weightx=3;
-        toplistHandle.add(new JLabel("Name",JLabel.CENTER),gbc);
+        gbc.weightx = 3;
+        toplistHandle.add(new JLabel("Name", JLabel.CENTER), gbc);
         gbc.gridx++;
-        gbc.weightx=2;
-        toplistHandle.add(new JLabel("Score",JLabel.LEFT),gbc);
-        JLabel [] toplistRanks = new JLabel[5];
-        JLabel [] toplistNames = new JLabel[5];
-        JLabel [] toplistScores = new JLabel[5];
+        gbc.weightx = 2;
+        toplistHandle.add(new JLabel("Score", JLabel.LEFT), gbc);
+        JLabel[] toplistRanks = new JLabel[5];
+        JLabel[] toplistNames = new JLabel[5];
+        JLabel[] toplistScores = new JLabel[5];
 
-        gbc.gridy=1;
-        gbc.gridx=0;
-        gbc.weightx=2;
+        gbc.gridy = 1;
+        gbc.gridx = 0;
+        gbc.weightx = 2;
         gbc.anchor = GridBagConstraints.NORTH;
-        int i=0;
-        for (JLabel label:toplistRanks){
+        int i = 0;
+        for (JLabel label : toplistRanks) {
             i++;
-            label = new JLabel(Integer.toString(i)+".",JLabel.RIGHT);
-            label.setFont(new Font("Comic Sans", Font.ITALIC+Font.BOLD, 24));
-            toplistHandle.add(label,gbc);
+            label = new JLabel(Integer.toString(i) + ".", JLabel.RIGHT);
+            label.setFont(new Font("Comic Sans", Font.ITALIC + Font.BOLD, 24));
+            toplistHandle.add(label, gbc);
             gbc.gridy++;
         }
-        gbc.gridy=1;
-        gbc.gridx=1;
-        gbc.weightx=3;
-        gbc.fill=GridBagConstraints.HORIZONTAL;
-        i=0;
-        for (JLabel label:toplistNames){
-            label= new JLabel("",JLabel.CENTER);
-            if (controller.topList.getItemsInList()>i){
+        gbc.gridy = 1;
+        gbc.gridx = 1;
+        gbc.weightx = 3;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        i = 0;
+        for (JLabel label : toplistNames) {
+            label = new JLabel("", JLabel.CENTER);
+            if (controller.topList.getItemsInList() > i) {
                 label.setText(controller.topList.getEntry(i).getName());
-            }else {
+            } else {
                 label.setText("");
             }
 
             i++;
 
-            label.setFont(new Font("Comic Sans", Font.ITALIC+Font.BOLD, 24));
-            toplistHandle.add(label,gbc);
+            label.setFont(new Font("Comic Sans", Font.ITALIC + Font.BOLD, 24));
+            toplistHandle.add(label, gbc);
             gbc.gridy++;
         }
-        gbc.gridy=1;
-        gbc.gridx=2;
-        gbc.weightx=1;
-        gbc.fill=GridBagConstraints.HORIZONTAL;
-        i=0;
-        for (JLabel label:toplistScores){
-            label= new JLabel("",JLabel.LEFT);
-            if (controller.topList.getItemsInList()>i){
+        gbc.gridy = 1;
+        gbc.gridx = 2;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        i = 0;
+        for (JLabel label : toplistScores) {
+            label = new JLabel("", JLabel.LEFT);
+            if (controller.topList.getItemsInList() > i) {
                 label.setText(Integer.toString(controller.topList.getEntry(i).getScore()));
-            }else {
+            } else {
                 label.setText("");
             }
 
             i++;
 
-            label.setFont(new Font("Comic Sans", Font.ITALIC+Font.BOLD, 24));
-            toplistHandle.add(label,gbc);
+            label.setFont(new Font("Comic Sans", Font.ITALIC + Font.BOLD, 24));
+            toplistHandle.add(label, gbc);
             gbc.gridy++;
         }
     }
+
     /**
      * This method shows/hides the game field labels used during multiplayer.
-     * @param multiOn  0/1 -> Hide/Show
+     *
+     * @param multiOn 0/1 -> Hide/Show
      */
-    public void setMultiplayerView(boolean multiOn){
+    public void setMultiplayerView(boolean multiOn) {
         this.oppArenaPanel.setVisible(multiOn);
         this.gameFieldLabels.setVisible(multiOn);
     }

@@ -23,7 +23,7 @@ public class Arena implements Serializable {
     /**
      * Sets player to starting position and clears fall object list.
      */
-    public void resetArena(){
+    public void resetArena() {
         this.player.setX(Arena.WIDTH / 2);
         this.player.setY(Arena.HEIGHT - 30);
         this.fallObjectList.clear();
@@ -31,6 +31,7 @@ public class Arena implements Serializable {
 
     /**
      * Setter method for player.
+     *
      * @param player reference to player
      */
     public void setPlayer(Player player) {
@@ -39,6 +40,7 @@ public class Arena implements Serializable {
 
     /**
      * Getter method for player
+     *
      * @return player
      */
     public Player getPlayer() {
@@ -47,6 +49,7 @@ public class Arena implements Serializable {
 
     /**
      * Getter method for fall object list
+     *
      * @return fall object list
      */
     public List<FallObject> getFallObjectList() {
@@ -55,6 +58,7 @@ public class Arena implements Serializable {
 
     /**
      * Setter method for fall object list
+     *
      * @param fallObjectList
      */
     public void setFallObjectList(List<FallObject> fallObjectList) {
@@ -63,6 +67,7 @@ public class Arena implements Serializable {
 
     /**
      * Returns Y coordinate of last generated object.
+     *
      * @return int Y coordinate
      */
     public int getMinY() {

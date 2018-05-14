@@ -25,6 +25,7 @@ public class TipsyOffsetGenerator {
 
     /**
      * Getter function for alcohol level
+     *
      * @return
      */
     public int getAlcoholLevel() {
@@ -33,6 +34,7 @@ public class TipsyOffsetGenerator {
 
     /**
      * Setter method for alcohol level
+     *
      * @param alcoholLevel
      */
     public void setAlcoholLevel(int alcoholLevel) {
@@ -44,6 +46,7 @@ public class TipsyOffsetGenerator {
 
     /**
      * Getter method for offset value
+     *
      * @return
      */
     public int getValue() {
@@ -59,13 +62,14 @@ public class TipsyOffsetGenerator {
             direction *= -1;
         }
 
-        if(alcoholLevel > 5)
-        value = value + direction * speed;
+        if (alcoholLevel > 5)
+            value = value + direction * speed;
 
     }
 
     /**
      * Test main method
+     *
      * @param args
      */
     public static void main(String[] args) {
