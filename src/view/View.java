@@ -81,7 +81,7 @@ public class View {
     /**
      * This method invokes the creatator methods for the different pages and adds them to the application window.
      *
-     * @return Map<PAGENAME   ,       JPanel> This returns a PAGENAME to JPanel Map, which is later used for opening the pages.
+     * @return Map<PAGENAME       ,               JPanel> This returns a PAGENAME to JPanel Map, which is later used for opening the pages.
      * @see Map
      * @see PAGENAME
      */
