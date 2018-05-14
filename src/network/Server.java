@@ -18,7 +18,6 @@ public class Server {
     private Socket socket = null;
     private ObjectOutputStream outStream = null;
     private ObjectInputStream inStream = null;
-    private volatile Arena arena_rx;
     private volatile boolean rx_ON = false;
     private GameEngine controller;
 
@@ -62,10 +61,11 @@ public class Server {
     public void receive() {
 
          try {
-            arena_rx = (Arena) inStream.readObject();
+             Arena arena_rx = (Arena) inStream.readObject();
+            controller.setArena_rx(arena_rx);
             System.out.println("Object received");
-            System.out.println(arena_rx);
-            System.out.println(arena_rx.getPlayer().getAlcoholLevel());
+//            System.out.println(arena_rx);
+//            System.out.println(arena_rx.getPlayer().getAlcoholLevel());
 
         } catch (IOException e) {
             e.printStackTrace();

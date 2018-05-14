@@ -5,9 +5,13 @@ import java.io.Serializable;
 public class FallObject implements Serializable{
     private int x;
     private int y;
-
+    public int id;
     private int velocity;
     private int type;
+
+    public FallObject(int id){
+        this.id = id;
+    }
 
     public int getAlcLevelCoef() {
         return alcLevelCoef;

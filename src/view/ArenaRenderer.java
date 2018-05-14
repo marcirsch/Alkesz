@@ -27,9 +27,9 @@ public class ArenaRenderer extends JPanel implements Runnable {
     public static final int FALLOBJECT_WIDTH = 10;
     public static final int FALLOBJECT_HEIGHT = 10;
 
-    private JLabel scoreLabel;
-    private JLabel alcoholLevelLabel;
-    private JLabel missedLabel;
+    private JLabel scoreLabel = null;
+    private JLabel alcoholLevelLabel = null;
+    private JLabel missedLabel = null;
     private Arena arena;
     private int blinkT = 1000;
     private int blinkCounter = 1;
@@ -209,9 +209,11 @@ public class ArenaRenderer extends JPanel implements Runnable {
      * This methods updates the score labels above the game field once it is invoked.
      */
     private void updateLabels() {
-        this.missedLabel.setText(String.valueOf(arena.getPlayer().getMissed()));
-        this.alcoholLevelLabel.setText(String.valueOf(arena.getPlayer().getAlcoholLevel()));
-        this.scoreLabel.setText(String.valueOf(arena.getPlayer().getPoints()));
+        if (this.scoreLabel != null) {
+            this.missedLabel.setText(String.valueOf(arena.getPlayer().getMissed()));
+            this.alcoholLevelLabel.setText(String.valueOf(arena.getPlayer().getAlcoholLevel()));
+            this.scoreLabel.setText(String.valueOf(arena.getPlayer().getPoints()));
+        }
     }
 
     /**

@@ -8,10 +8,17 @@ import java.util.List;
 import java.util.Random;
 
 public class Arena implements Serializable {
-    public static final int HEIGHT = View.WINDOW_HEIGHT / 25 * 18;
-    public static final int WIDTH = View.WINDOW_WIDTH;
+    public static int HEIGHT = View.WINDOW_HEIGHT / 25 * 18;
+    public static int WIDTH = View.WINDOW_WIDTH;
+
+
 
     private Player player;
+
+    public void setFallObjectList(List<FallObject> fallObjectList) {
+        this.fallObjectList = fallObjectList;
+    }
+
     private List<FallObject> fallObjectList = new ArrayList<>();
 
     private Random random = new Random(System.currentTimeMillis());
@@ -19,14 +26,15 @@ public class Arena implements Serializable {
 
     public Arena() {
         this.player = new Player();
-
     }
 
 
     public Player getPlayer() {
         return player;
     }
-
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
 
     public List<FallObject> getFallObjectList() {
         return fallObjectList;

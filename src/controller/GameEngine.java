@@ -19,7 +19,12 @@ import java.util.Random;
 public class GameEngine implements MouseMotionListener {
 
     private Arena arena;
+    private int fallObjectIter = 0;
+
+
+    private Arena oppArena;
     private ArenaRenderer arenaRenderer;
+    private ArenaRenderer oppArenaRenderer;
     private TipsyOffsetGenerator tipsyOffsetGenerator;
     private Client client;
     private Server server;
@@ -27,6 +32,31 @@ public class GameEngine implements MouseMotionListener {
     public TopList topList;
     private View view;
 
+    public Arena getArena_rx() {
+        return arena_rx;
+    }
+
+    public void setArena_rx(Arena arena_rx) {
+        boolean foNew = true;
+        this.arena_rx = arena_rx;
+        this.oppArena.setPlayer(this.arena_rx.getPlayer());
+        this.oppArena.setFallObjectList(this.arena_rx.getFallObjectList());
+        if (this.settings.getRole() == Settings.SERVER_CLIENT_ROLE.CLIENT) {
+            for (FallObject fo_rx : arena_rx.getFallObjectList()) {
+                foNew = true;
+                for (FallObject fo : arena.getFallObjectList()) {
+                    if (fo_rx.id == fo.id) {
+                        foNew = false;
+                    }
+                }
+                if (foNew) {
+                    arena.getFallObjectList().add(fo_rx);
+                }
+            }
+        }
+    }
+
+    private volatile Arena arena_rx;
 
     private boolean play = false;
 
@@ -45,6 +75,10 @@ public class GameEngine implements MouseMotionListener {
         arena = new Arena();
         arena.getPlayer().setX(Arena.WIDTH / 2);
         arena.getPlayer().setY(Arena.HEIGHT - 30);
+
+        this.oppArena = new Arena();
+        oppArena.getPlayer().setX(Arena.WIDTH / 2);
+        oppArena.getPlayer().setY(Arena.HEIGHT - 30);
 
         settings = new Settings();
         topList = new TopList();
@@ -101,7 +135,9 @@ public class GameEngine implements MouseMotionListener {
 
     private void UpdateFallObjects() {
         //create fallObjects randomly
-        addNewFallObject();
+        if (this.settings.getRole() == Settings.SERVER_CLIENT_ROLE.SERVER) {
+            addNewFallObject();
+        }
 
         try {
             for (FallObject fallObject : arena.getFallObjectList()) {
@@ -205,7 +241,10 @@ public class GameEngine implements MouseMotionListener {
         if (random.nextInt(1000) % getDifficultyDiv() == 1 && arena.getMinY() > getDifficultyTh()) {
             List<FallObject> fallObjectList = arena.getFallObjectList();
 
-            FallObject fallObject = new FallObject();
+            FallObject fallObject = new FallObject(this.fallObjectIter);
+            if (this.settings.getRole() == Settings.SERVER_CLIENT_ROLE.SERVER) {
+                this.fallObjectIter++;
+            }
             fallObject.setY(0);
             fallObject.setX(random.nextInt(Arena.WIDTH));
             fallObject.setVelocity(1);
@@ -276,8 +315,24 @@ public class GameEngine implements MouseMotionListener {
     public void startGame(Settings.GAME_MODE gameMode) {
         this.settings.setGameMode(gameMode);
         this.setPlay(true);
+        if (gameMode == Settings.GAME_MODE.SINGLEPLAYER) {
+            this.getArena().WIDTH = View.WINDOW_WIDTH;
+            this.view.setMultiplayerView(false);
+            arena.getPlayer().setX(Arena.WIDTH / 2);
+            arena.getPlayer().setY(Arena.HEIGHT - 30);
+            oppArena.getPlayer().setX(Arena.WIDTH / 2);
+            oppArena.getPlayer().setY(Arena.HEIGHT - 30);
+        }
+
         if (gameMode == Settings.GAME_MODE.MULTIPLAYER){
-            this.view.showPage(View.PAGENAME.SINGLEPLAYER);
+            this.view.showPage(View.PAGENAME.GAME);
+            this.getArena().WIDTH = View.WINDOW_WIDTH/2;
+            this.view.setMultiplayerView(true);
+            arena.getPlayer().setX(Arena.WIDTH / 2);
+            arena.getPlayer().setY(Arena.HEIGHT - 50);
+            oppArena.getPlayer().setX(Arena.WIDTH / 2);
+            oppArena.getPlayer().setY(Arena.HEIGHT - 50);
+            fallObjectIter = -1;
         }
     }
 
@@ -318,4 +373,19 @@ public class GameEngine implements MouseMotionListener {
         new Thread(this.server::receive_loop).start();
     }
 
+    public ArenaRenderer getOppArenaRenderer() {
+        return oppArenaRenderer;
+    }
+
+    public void setOppArenaRenderer(ArenaRenderer oppArenaRenderer) {
+        this.oppArenaRenderer = oppArenaRenderer;
+    }
+
+    public Arena getOppArena() {
+        return oppArena;
+    }
+
+    public void setOppArena(Arena oppArena) {
+        this.oppArena = oppArena;
+    }
 }
