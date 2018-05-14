@@ -36,25 +36,6 @@ public class GameEngine implements MouseMotionListener {
         return arena_rx;
     }
 
-    public void setArena_rx(Arena arena_rx) {
-        boolean foNew = true;
-        this.arena_rx = arena_rx;
-        this.oppArena.setPlayer(this.arena_rx.getPlayer());
-        this.oppArena.setFallObjectList(this.arena_rx.getFallObjectList());
-        if (this.settings.getRole() == Settings.SERVER_CLIENT_ROLE.CLIENT) {
-            for (FallObject fo_rx : arena_rx.getFallObjectList()) {
-                foNew = true;
-                for (FallObject fo : arena.getFallObjectList()) {
-                    if (fo_rx.id == fo.id) {
-                        foNew = false;
-                    }
-                }
-                if (foNew) {
-                    arena.getFallObjectList().add(fo_rx);
-                }
-            }
-        }
-    }
 
     private volatile Arena arena_rx;
 
@@ -73,12 +54,10 @@ public class GameEngine implements MouseMotionListener {
         server = new Server(this);
         this.view = gui;
         arena = new Arena();
-        arena.getPlayer().setX(Arena.WIDTH / 2);
-        arena.getPlayer().setY(Arena.HEIGHT - 30);
+        arena.resetArena();
 
-        this.oppArena = new Arena();
-        oppArena.getPlayer().setX(Arena.WIDTH / 2);
-        oppArena.getPlayer().setY(Arena.HEIGHT - 30);
+        oppArena = new Arena();
+        oppArena.resetArena();
 
         settings = new Settings();
         topList = new TopList();
@@ -135,7 +114,7 @@ public class GameEngine implements MouseMotionListener {
 
     private void UpdateFallObjects() {
         //create fallObjects randomly
-        if (this.settings.getRole() == Settings.SERVER_CLIENT_ROLE.SERVER) {
+        if (this.settings.getRole() == Settings.SERVER_CLIENT_ROLE.SERVER || this.settings.getGameMode() == Settings.GAME_MODE.SINGLEPLAYER) {
             addNewFallObject();
         }
 
@@ -282,6 +261,25 @@ public class GameEngine implements MouseMotionListener {
         return fallObjRect.intersects(playerRect);
     }
 
+    public void setArena_rx(Arena arena_rx) {
+        boolean foNew = true;
+        this.arena_rx = arena_rx;
+        this.oppArena.setPlayer(this.arena_rx.getPlayer());
+        this.oppArena.setFallObjectList(this.arena_rx.getFallObjectList());
+        if (this.settings.getRole() == Settings.SERVER_CLIENT_ROLE.CLIENT) {
+            for (FallObject fo_rx : arena_rx.getFallObjectList()) {
+                foNew = true;
+                for (FallObject fo : arena.getFallObjectList()) {
+                    if (fo_rx.id == fo.id || fo_rx.getY()>20) {
+                        foNew = false;
+                    }
+                }
+                if (foNew) {
+                    arena.getFallObjectList().add(fo_rx);
+                }
+            }
+        }
+    }
 
     public void ResetGame() {
         arena.getPlayer().setMissed(0);
@@ -322,20 +320,40 @@ public class GameEngine implements MouseMotionListener {
             arena.getPlayer().setY(Arena.HEIGHT - 30);
             oppArena.getPlayer().setX(Arena.WIDTH / 2);
             oppArena.getPlayer().setY(Arena.HEIGHT - 30);
+            arena.resetArena();
+            oppArena.resetArena();
         }
 
         if (gameMode == Settings.GAME_MODE.MULTIPLAYER){
             this.view.showPage(View.PAGENAME.GAME);
             this.getArena().WIDTH = View.WINDOW_WIDTH/2;
             this.view.setMultiplayerView(true);
+            arena.resetArena();
+            oppArena.resetArena();
             arena.getPlayer().setX(Arena.WIDTH / 2);
             arena.getPlayer().setY(Arena.HEIGHT - 50);
             oppArena.getPlayer().setX(Arena.WIDTH / 2);
             oppArena.getPlayer().setY(Arena.HEIGHT - 50);
+
             fallObjectIter = -1;
         }
     }
 
+    public void stopGame(Settings.GAME_MODE gameMode) {
+        arena.resetArena();
+        oppArena.resetArena();
+        this.ResetGame();
+        this.setPlay(false);
+        if (gameMode == Settings.GAME_MODE.MULTIPLAYER){
+            view.showPage(View.PAGENAME.MULTIPLAYERSETTINGS);
+            if (settings.getRole() == Settings.SERVER_CLIENT_ROLE.SERVER) {
+                server.stop_receive();
+            }else{
+                client.stop_receive();
+            }
+
+        }
+    }
     @Override
     public void mouseDragged(MouseEvent mouseEvent) {
 
@@ -362,15 +380,17 @@ public class GameEngine implements MouseMotionListener {
     }
 
     public void startClient() {
-        this.client.ConnectToServer("127.0.0.1");
-        this.client.start_receive();
-        new Thread(this.client::receive_loop).start();
+        if (this.client.ConnectToServer(settings.getRemoteIPAddress())) {
+            this.client.start_receive();
+            new Thread(this.client::receive_loop).start();
+        }
     }
 
     public void startServer() {
-        this.server.StartServer();
-        this.server.start_receive();
-        new Thread(this.server::receive_loop).start();
+        if (this.server.StartServer()) {
+            this.server.start_receive();
+            new Thread(this.server::receive_loop).start();
+        }
     }
 
     public ArenaRenderer getOppArenaRenderer() {

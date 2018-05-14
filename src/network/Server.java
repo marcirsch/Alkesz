@@ -10,6 +10,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -25,20 +26,37 @@ public class Server {
         this.controller = controller;
     }
 
-    public void StartServer() {
+    public boolean StartServer() {
 
         System.out.println("Start server");
 
         try {
             serverSocket = new ServerSocket(7777);
+            serverSocket.setSoTimeout(10000);
             socket = serverSocket.accept();
-            System.out.println("Connected");
-
-
             inStream = new ObjectInputStream(socket.getInputStream());
             outStream = new ObjectOutputStream(socket.getOutputStream());
             outStream.flush();
             this.controller.startGame(Settings.GAME_MODE.MULTIPLAYER);
+            System.out.println("Connected");
+            return true;
+        } catch (SocketTimeoutException s) {
+            System.out.println("Socket timed out!");
+            return false;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    public void StopServer() {
+
+        System.out.println("Stop server");
+
+        try {
+            serverSocket.close();
+            socket.close();
+            System.out.println("Server stopped");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -69,6 +87,9 @@ public class Server {
 
         } catch (IOException e) {
             e.printStackTrace();
+            controller.stopGame(Settings.GAME_MODE.MULTIPLAYER);
+            this.stop_receive();
+            this.StopServer();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -79,6 +100,7 @@ public class Server {
         while (rx_ON == true) {
             receive();
         }
+        this.StopServer();
 
     }
 

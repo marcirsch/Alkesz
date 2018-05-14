@@ -11,6 +11,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.sql.Time;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -29,12 +30,13 @@ public class Client {
     }
 
 
-    public void ConnectToServer(String ipaddress) {
+    public boolean ConnectToServer(String ipaddress) {
 
         while (!isConnected) try {
             System.out.println("Try to connect to:" + ipaddress);
             socket = new Socket(ipaddress, 7777);
-            System.out.println("Connected!");
+            socket.setSoTimeout(10000);
+
             isConnected = true;
 
             outStream = new ObjectOutputStream(socket.getOutputStream());
@@ -42,13 +44,19 @@ public class Client {
 
             inStream = new ObjectInputStream(socket.getInputStream());
             this.controller.startGame(Settings.GAME_MODE.MULTIPLAYER);
-
+            System.out.println("Connected!");
+            return true;
+        } catch (SocketTimeoutException s) {
+            System.out.println("Socket timed out!");
+            return false;
         } catch (SocketException se) {
             se.printStackTrace();
-            System.exit(0);
+            return false;
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
+        return false;
     }
 
     public void Disconnect() {
@@ -56,6 +64,7 @@ public class Client {
         try {
             System.out.println("Try to close socket, HOST:" + socket.getInetAddress());
             outStream.close();
+            isConnected = false;
             socket.close();
             System.out.println("Success!");
 
@@ -77,6 +86,9 @@ public class Client {
             outStream.writeObject(arena);
 
         } catch (IOException e) {
+            controller.stopGame(Settings.GAME_MODE.MULTIPLAYER);
+            this.stop_receive();
+            this.Disconnect();
             e.printStackTrace();
         }
 
@@ -95,6 +107,10 @@ public class Client {
 
         } catch (IOException e) {
             e.printStackTrace();
+            controller.stopGame(Settings.GAME_MODE.MULTIPLAYER);
+            this.stop_receive();
+            this.Disconnect();
+
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -105,7 +121,7 @@ public class Client {
         while (rx_ON == true) {
             receive();
         }
-
+        this.Disconnect();
     }
 
     public void start_receive(){

@@ -393,7 +393,6 @@ public class View {
             addressPanel.add(ipInputField,gbc);
             clientLabel.addMouseListener(setServerClientRoleListener(SERVER_CLIENT_ROLE.CLIENT,roleLabels,ipLabel,ip,ipInputField));
             serverLabel.addMouseListener(setServerClientRoleListener(SERVER_CLIENT_ROLE.SERVER,roleLabels,ipLabel,ip,ipInputField));
-//            TODO ehhez ebből a beírtésvalidált cuccot be kéne írni a remoe_ip settingsbe
         }catch (java.text.ParseException exc) {
             System.err.println("formatter is bad: " + exc.getMessage());
             System.exit(-1);
@@ -404,7 +403,11 @@ public class View {
         connectBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (ipInputField.getInputVerifier().verify(ipInputField)){
-                    controller.settings.setRemoteIPAddress(ipInputField.getText());
+                    if (ipInputField.getText() == "000.000.000.000"){
+                        controller.settings.setRemoteIPAddress("127.0.0.1");
+                    }else {
+                        controller.settings.setRemoteIPAddress(ipInputField.getText());
+                    }
                     System.out.println("Server ip to connect: "+ipInputField.getText());
 
                     if(controller.settings.getRole() == SERVER_CLIENT_ROLE.CLIENT){
@@ -730,8 +733,7 @@ public class View {
         MouseListener listener = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                controller.setPlay(false);
-                controller.ResetGame();
+                controller.stopGame(controller.settings.getGameMode());
             }
         };
         return listener;
@@ -835,7 +837,10 @@ public class View {
             gbc.gridy++;
         }
     }
-
+    /**
+     * This method shows/hides the game field labels used during multiplayer.
+     * @param multiOn  0/1 -> Hide/Show
+     */
     public void setMultiplayerView(boolean multiOn){
         this.oppArenaPanel.setVisible(multiOn);
         this.gameFieldLabels.setVisible(multiOn);

@@ -28,6 +28,11 @@ public class Arena implements Serializable {
         this.player = new Player();
     }
 
+    public void resetArena(){
+        this.player.setX(Arena.WIDTH / 2);
+        this.player.setY(Arena.HEIGHT - 30);
+        this.fallObjectList.clear();
+    }
 
     public Player getPlayer() {
         return player;

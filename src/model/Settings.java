@@ -31,7 +31,6 @@ public class Settings {
         role = SERVER_CLIENT_ROLE.SERVER;
         InetAddress ip;
         try {
-//TODO Refresh
             ip = InetAddress.getLocalHost();
             localIPAddress = ip.getHostAddress();
             System.out.println("Current IP address : " + localIPAddress);
